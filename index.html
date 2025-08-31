@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tegy S - Образовательный Бот</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* Красивый градиент */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            overflow-y: auto;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; }
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px); /* Размытие для стиля */
+            animation: cardAppear 0.8s ease-in-out;
+        }
+        @keyframes cardAppear {
+            from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; }
+        }
+        .button {
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .flashcard {
+            background: #fff;
+            color: #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .flashcard img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .quiz-input {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            width: 80%;
+        }
+        #result {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .about-text {
+            font-size: 1em;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tegy S: Обучение по направлениям</h1>
+    
+    <div id="main-menu" class="section">
+        <p>Выберите направление для обучения:</p>
+        <button class="button" onclick="showSection('english')">Английский язык</button>
+        <!-- Добавьте здесь кнопки для других направлений, например: <button class="button" onclick="showSection('math')">Математика</button> -->
+    </div>
+    
+    <div id="english-section" class="section" style="display: none;">
+        <h2>Уроки английского языка</h2>
+        <p>Изучайте слова и фразы с примерами!</p>
+        
+        <!-- Flashcards -->
+        <div class="flashcard">
+            <img src="https://via.placeholder.com/300?text=Apple" alt="Apple">
+            <p><strong>Word:</strong> Apple</p>
+            <p><strong>Translation:</strong> Яблоко</p>
+            <p><strong>Example:</strong> I eat an apple every day.</p>
+        </div>
+        <div class="flashcard">
+            <img src="https://via.placeholder.com/300?text=Hello" alt="Hello">
+            <p><strong>Word:</strong> Hello</p>
+            <p><strong>Translation:</strong> Привет</p>
+            <p><strong>Example:</strong> Hello, how are you?</p>
+        </div>
+        
+        <!-- Простой квиз -->
+        <h3>Квиз: Переведи слово "Book"</h3>
+        <input type="text" id="quiz-answer" class="quiz-input" placeholder="Ваш ответ (на русском)">
+        <button class="button" onclick="checkQuiz()">Проверить</button>
+        <p id="result"></p>
+    </div>
+    
+    <div id="about-section" class="section" style="display: none;">
+        <h2>О нас</h2>
+        <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь предпринимателем Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
+    </div>
+    
+    <script>
+        // Верификация: Работает только в Telegram
+        const initData = Telegram.WebApp.initDataUnsafe;
+        if (!initData || !initData.user) {
+            document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
+        } else {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.MainButton.text = 'Вернуться в меню';
+            Telegram.WebApp.MainButton.onClick(() => showMainMenu());
+            Telegram.WebApp.MainButton.show();
+        }
+
+        // Функции навигации
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+            document.getElementById(`${sectionId}-section`).style.display = 'block';
+            Telegram.WebApp.MainButton.text = 'Вернуться в меню';
+        }
+
+        function showMainMenu() {
+            document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+            document.getElementById('main-menu').style.display = 'block';
+            Telegram.WebApp.MainButton.hide(); // Скрыть кнопку в главном меню
+        }
+
+        // Квиз по английскому
+        function checkQuiz() {
+            const answer = document.getElementById('quiz-answer').value.trim().toLowerCase();
+            const result = document.getElementById('result');
+            if (answer === 'книга') {
+                result.innerText = 'Правильно! 🎉';
+                result.style.color = 'green';
+                Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', status: 'correct'
