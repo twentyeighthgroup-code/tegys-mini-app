@@ -84,13 +84,27 @@
             border: none;
             width: 80%;
         }
-        #result {
+        .result {
             font-size: 1.2em;
             margin-top: 10px;
         }
         .about-text {
             font-size: 1em;
             line-height: 1.5;
+        }
+        .level-section {
+            display: none;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            animation: confetti-fall 1s linear;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -100,37 +114,132 @@
     <div id="main-menu" class="section">
         <p>Выберите направление для обучения:</p>
         <button class="button" onclick="showSection('english')">Английский язык</button>
+        <button class="button" onclick="showSection('about')">О нас</button>
         <!-- Добавьте здесь кнопки для других направлений, например: <button class="button" onclick="showSection('math')">Математика</button> -->
     </div>
     
     <div id="english-section" class="section" style="display: none;">
         <h2>Уроки английского языка</h2>
-        <p>Изучайте слова и фразы с примерами!</p>
+        <p>Выберите уровень:</p>
+        <button class="button" onclick="showLevel('beginner')">Beginner (Начинающий)</button>
+        <button class="button" onclick="showLevel('intermediate')">Intermediate (Средний)</button>
         
-        <!-- Flashcards -->
-        <div class="flashcard">
-            <img src="https://via.placeholder.com/300?text=Apple" alt="Apple">
-            <p><strong>Word:</strong> Apple</p>
-            <p><strong>Translation:</strong> Яблоко</p>
-            <p><strong>Example:</strong> I eat an apple every day.</p>
-        </div>
-        <div class="flashcard">
-            <img src="https://via.placeholder.com/300?text=Hello" alt="Hello">
-            <p><strong>Word:</strong> Hello</p>
-            <p><strong>Translation:</strong> Привет</p>
-            <p><strong>Example:</strong> Hello, how are you?</p>
+        <!-- Уровень Beginner -->
+        <div id="beginner-level" class="level-section">
+            <h3>Beginner: Основные слова</h3>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Apple" alt="Apple">
+                <p><strong>Word:</strong> Apple</p>
+                <p><strong>Translation:</strong> Яблоко</p>
+                <p><strong>Example:</strong> I eat an apple every day.</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Hello" alt="Hello">
+                <p><strong>Word:</strong> Hello</p>
+                <p><strong>Translation:</strong> Привет</p>
+                <p><strong>Example:</strong> Hello, how are you?</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Book" alt="Book">
+                <p><strong>Word:</strong> Book</p>
+                <p><strong>Translation:</strong> Книга</p>
+                <p><strong>Example:</strong> I read a book.</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Cat" alt="Cat">
+                <p><strong>Word:</strong> Cat</p>
+                <p><strong>Translation:</strong> Кот</p>
+                <p><strong>Example:</strong> The cat is sleeping.</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=House" alt="House">
+                <p><strong>Word:</strong> House</p>
+                <p><strong>Translation:</strong> Дом</p>
+                <p><strong>Example:</strong> My house is big.</p>
+            </div>
+            
+            <h3>Квиз для Beginner</h3>
+            <p>Вопрос 1: Переведи "Dog"</p>
+            <input type="text" id="quiz-beginner-1" class="quiz-input" placeholder="Ваш ответ (на русском)">
+            <button class="button" onclick="checkQuiz('beginner-1', 'собака')">Проверить</button>
+            <p id="result-beginner-1" class="result"></p>
+            
+            <p>Вопрос 2: Переведи "Thank you"</p>
+            <input type="text" id="quiz-beginner-2" class="quiz-input" placeholder="Ваш ответ (на русском)">
+            <button class="button" onclick="checkQuiz('beginner-2', 'спасибо')">Проверить</button>
+            <p id="result-beginner-2" class="result"></p>
+            
+            <p>Вопрос 3: Переведи "Water"</p>
+            <input type="text" id="quiz-beginner-3" class="quiz-input" placeholder="Ваш ответ (на русском)">
+            <button class="button" onclick="checkQuiz('beginner-3', 'вода')">Проверить</button>
+            <p id="result-beginner-3" class="result"></p>
+            
+            <button class="button" onclick="hideLevels()">Вернуться к уровням</button>
         </div>
         
-        <!-- Простой квиз -->
-        <h3>Квиз: Переведи слово "Book"</h3>
-        <input type="text" id="quiz-answer" class="quiz-input" placeholder="Ваш ответ (на русском)">
-        <button class="button" onclick="checkQuiz()">Проверить</button>
-        <p id="result"></p>
+        <!-- Уровень Intermediate -->
+        <div id="intermediate-level" class="level-section">
+            <h3>Intermediate: Фразы и грамматика</h3>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Weather" alt="Weather">
+                <p><strong>Phrase:</strong> What's the weather like?</p>
+                <p><strong>Translation:</strong> Какая погода?</p>
+                <p><strong>Example:</strong> What's the weather like today? It's sunny.</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Travel" alt="Travel">
+                <p><strong>Word:</strong> Travel</p>
+                <p><strong>Translation:</strong> Путешествовать</p>
+                <p><strong>Example:</strong> I love to travel around the world.</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Restaurant" alt="Restaurant">
+                <p><strong>Word:</strong> Restaurant</p>
+                <p><strong>Translation:</strong> Ресторан</p>
+                <p><strong>Example:</strong> Let's go to a restaurant for dinner.</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Meeting" alt="Meeting">
+                <p><strong>Phrase:</strong> Nice to meet you</p>
+                <p><strong>Translation:</strong> Приятно познакомиться</p>
+                <p><strong>Example:</strong> Nice to meet you, my name is Alex.</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Question" alt="Question">
+                <p><strong>Word:</strong> Question</p>
+                <p><strong>Translation:</strong> Вопрос</p>
+                <p><strong>Example:</strong> Do you have any questions?</p>
+            </div>
+            <div class="flashcard">
+                <img src="https://via.placeholder.com/300?text=Friend" alt="Friend">
+                <p><strong>Word:</strong> Friend</p>
+                <p><strong>Translation:</strong> Друг</p>
+                <p><strong>Example:</strong> My best friend lives in another city.</p>
+            </div>
+            
+            <h3>Квиз для Intermediate</h3>
+            <p>Вопрос 1: Переведи "I would like to order"</p>
+            <input type="text" id="quiz-intermediate-1" class="quiz-input" placeholder="Ваш ответ (на русском)">
+            <button class="button" onclick="checkQuiz('intermediate-1', 'я бы хотел заказать')">Проверить</button>
+            <p id="result-intermediate-1" class="result"></p>
+            
+            <p>Вопрос 2: Переведи "Excuse me"</p>
+            <input type="text" id="quiz-intermediate-2" class="quiz-input" placeholder="Ваш ответ (на русском)">
+            <button class="button" onclick="checkQuiz('intermediate-2', 'извините')">Проверить</button>
+            <p id="result-intermediate-2" class="result"></p>
+            
+            <p>Вопрос 3: Переведи "Appointment"</p>
+            <input type="text" id="quiz-intermediate-3" class="quiz-input" placeholder="Ваш ответ (на русском)">
+            <button class="button" onclick="checkQuiz('intermediate-3', 'встреча')">Проверить</button>
+            <p id="result-intermediate-3" class="result"></p>
+            
+            <button class="button" onclick="hideLevels()">Вернуться к уровням</button>
+        </div>
     </div>
     
     <div id="about-section" class="section" style="display: none;">
         <h2>О нас</h2>
-        <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь предпринимателем Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
+        <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
     </div>
     
     <script>
@@ -150,19 +259,50 @@
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.getElementById(`${sectionId}-section`).style.display = 'block';
             Telegram.WebApp.MainButton.text = 'Вернуться в меню';
+            if (sectionId !== 'english') {
+                hideLevels();
+            }
         }
 
         function showMainMenu() {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.getElementById('main-menu').style.display = 'block';
             Telegram.WebApp.MainButton.hide(); // Скрыть кнопку в главном меню
+            hideLevels();
         }
 
-        // Квиз по английскому
-        function checkQuiz() {
-            const answer = document.getElementById('quiz-answer').value.trim().toLowerCase();
-            const result = document.getElementById('result');
-            if (answer === 'книга') {
+        function showLevel(level) {
+            hideLevels();
+            document.getElementById(`${level}-level`).style.display = 'block';
+        }
+
+        function hideLevels() {
+            document.querySelectorAll('.level-section').forEach(sec => sec.style.display = 'none');
+        }
+
+        // Универсальная функция для проверки квиза
+        function checkQuiz(quizId, correctAnswer) {
+            const answer = document.getElementById(`quiz-${quizId}`).value.trim().toLowerCase();
+            const result = document.getElementById(`result-${quizId}`);
+            if (answer === correctAnswer) {
                 result.innerText = 'Правильно! 🎉';
                 result.style.color = 'green';
-                Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', status: 'correct'
+                Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: quizId.split('-')[0], status: 'correct' }));
+                // Анимация конфетти
+                for (let i = 0; i < 20; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = `${Math.random() * 100}vw`;
+                    confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 1000);
+                }
+            } else {
+                result.innerText = 'Неправильно. Попробуй снова!';
+                result.style.color = 'red';
+                Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: quizId.split('-')[0], status: 'incorrect' }));
+            }
+        }
+    </script>
+</body>
+</html>
