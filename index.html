@@ -6,12 +6,13 @@
     <title>Tegy S - Образовательный Бот</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Иконки -->
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* Светлая тема */
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -23,7 +24,7 @@
             transition: background 0.5s;
         }
         body.dark {
-            background: linear-gradient(135deg, #1e1e1e 0%, #4a148c 100%); /* Тёмная тема */
+            background: linear-gradient(135deg, #1e1e1e 0%, #333 100%);
             color: #ddd;
         }
         @keyframes fadeIn {
@@ -49,6 +50,9 @@
             backdrop-filter: blur(10px);
             animation: cardAppear 0.8s ease-in-out;
         }
+        body.dark .section {
+            background: rgba(0, 0, 0, 0.3);
+        }
         @keyframes cardAppear {
             from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; }
         }
@@ -63,6 +67,10 @@
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); }
         }
         .button:hover {
             transform: scale(1.05);
@@ -76,19 +84,20 @@
             margin: 10px 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             text-align: center;
-            animation: slideFromLeft 0.5s ease-out;
+            transition: transform 0.2s;
+        }
+        .flashcard:hover {
+            transform: translateY(-5px);
         }
         body.dark .flashcard {
-            background: #333;
-            color: #ddd;
-        }
-        @keyframes slideFromLeft {
-            from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; }
+            background: #444;
+            color: #fff;
         }
         .flashcard img {
             max-width: 100%;
             border-radius: 10px;
             margin-bottom: 10px;
+            loading: lazy;
         }
         .quiz-input {
             margin: 10px 0;
@@ -120,9 +129,9 @@
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
         .progress-bar {
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
+            background: #ddd;
             height: 10px;
+            border-radius: 5px;
             margin: 10px 0;
         }
         .progress-fill {
@@ -131,14 +140,25 @@
             border-radius: 5px;
             transition: width 0.3s;
         }
-        .audio-button {
-            background: #4caf50;
-            border: none;
+        .award {
+            font-size: 2em;
+            animation: bounce 1s;
+        }
+        @keyframes bounce {
+            0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); }
+        }
+        .search-input {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
             border-radius: 5px;
-            color: white;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-top: 5px;
+            border: none;
+        }
+        iframe {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -147,287 +167,51 @@
     
     <div id="main-menu" class="section">
         <p>Выберите направление для обучения:</p>
-        <button class="button" onclick="showSection('english')">Английский язык</button>
-        <button class="button" onclick="showSection('about')">О нас</button>
-        <button class="button" onclick="toggleTheme()">Переключить тему (Светлая/Тёмная)</button>
+        <button class="button" onclick="showSection('english')"><i class="fas fa-book"></i> Английский язык</button>
+        <button class="button" onclick="showSection('about')"><i class="fas fa-info-circle"></i> О нас</button>
+        <button class="button" onclick="toggleTheme()"><i class="fas fa-moon"></i> Тёмная тема</button>
         <!-- Добавьте здесь кнопки для других направлений -->
     </div>
     
     <div id="english-section" class="section" style="display: none;">
         <h2>Уроки английского языка</h2>
+        <input type="text" class="search-input" id="search" placeholder="Поиск по словам..." oninput="searchFlashcards()">
         <p>Выберите уровень:</p>
-        <button class="button" onclick="showLevel('beginner')">Beginner (Начинающий)</button>
-        <button class="button" onclick="showLevel('intermediate')">Intermediate (Средний)</button>
-        <button class="button" onclick="showLevel('advanced')">Advanced (Продвинутый)</button>
-        <button class="button" onclick="randomQuiz()">Случайный квиз</button>
-        <div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width: 0%;"></div></div>
-        <p id="progress-text">Прогресс: 0/12 квизов пройдено</p>
+        <button class="button" onclick="showLevel('beginner')"><i class="fas fa-star"></i> Beginner (Начинающий)</button>
+        <button class="button" onclick="showLevel('intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate (Средний)</button>
+        <button class="button" onclick="showLevel('advanced')"><i class="fas fa-star"></i> Advanced (Продвинутый)</button>
         
-        <!-- Уровень Beginner (расширенный) -->
+        <!-- Контейнеры для уровней (контент генерируется динамически) -->
         <div id="beginner-level" class="level-section">
-            <h3>Beginner: Основные слова</h3>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Apple" alt="Apple">
-                <p><strong>Word:</strong> Apple</p>
-                <p><strong>Translation:</strong> Яблоко</p>
-                <p><strong>Example:</strong> I eat an apple every day.</p>
-                <button class="audio-button" onclick="playAudio('apple')">Прослушать</button>
-                <audio id="audio-apple" src="https://freesound.org/data/previews/123/123456.mp3"></audio> <!-- Замените на реальный MP3 -->
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Hello" alt="Hello">
-                <p><strong>Word:</strong> Hello</p>
-                <p><strong>Translation:</strong> Привет</p>
-                <p><strong>Example:</strong> Hello, how are you?</p>
-                <button class="audio-button" onclick="playAudio('hello')">Прослушать</button>
-                <audio id="audio-hello" src="https://freesound.org/data/previews/789/789012.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Book" alt="Book">
-                <p><strong>Word:</strong> Book</p>
-                <p><strong>Translation:</strong> Книга</p>
-                <p><strong>Example:</strong> I read a book.</p>
-                <button class="audio-button" onclick="playAudio('book')">Прослушать</button>
-                <audio id="audio-book" src="https://freesound.org/data/previews/456/456789.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Cat" alt="Cat">
-                <p><strong>Word:</strong> Cat</p>
-                <p><strong>Translation:</strong> Кот</p>
-                <p><strong>Example:</strong> The cat is sleeping.</p>
-                <button class="audio-button" onclick="playAudio('cat')">Прослушать</button>
-                <audio id="audio-cat" src="https://freesound.org/data/previews/321/321654.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=House" alt="House">
-                <p><strong>Word:</strong> House</p>
-                <p><strong>Translation:</strong> Дом</p>
-                <p><strong>Example:</strong> My house is big.</p>
-                <button class="audio-button" onclick="playAudio('house')">Прослушать</button>
-                <audio id="audio-house" src="https://freesound.org/data/previews/987/987654.mp3"></audio>
-            </div>
-            <div class="flashcard"> <!-- Новый -->
-                <img src="https://via.placeholder.com/300?text=Family" alt="Family">
-                <p><strong>Word:</strong> Family</p>
-                <p><strong>Translation:</strong> Семья</p>
-                <p><strong>Example:</strong> My family is important to me.</p>
-                <button class="audio-button" onclick="playAudio('family')">Прослушать</button>
-                <audio id="audio-family" src="https://freesound.org/data/previews/111/111222.mp3"></audio>
-            </div>
-            <div class="flashcard"> <!-- Новый -->
-                <img src="https://via.placeholder.com/300?text=Food" alt="Food">
-                <p><strong>Word:</strong> Food</p>
-                <p><strong>Translation:</strong> Еда</p>
-                <p><strong>Example:</strong> I like Italian food.</p>
-                <button class="audio-button" onclick="playAudio('food')">Прослушать</button>
-                <audio id="audio-food" src="https://freesound.org/data/previews/333/333444.mp3"></audio>
-            </div>
-            
-            <h3>Квиз для Beginner</h3>
-            <p>Вопрос 1: Переведи "Dog"</p>
-            <input type="text" id="quiz-beginner-1" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('beginner-1', 'собака')">Проверить</button>
-            <p id="result-beginner-1" class="result"></p>
-            
-            <p>Вопрос 2: Переведи "Thank you"</p>
-            <input type="text" id="quiz-beginner-2" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('beginner-2', 'спасибо')">Проверить</button>
-            <p id="result-beginner-2" class="result"></p>
-            
-            <p>Вопрос 3: Переведи "Water"</p>
-            <input type="text" id="quiz-beginner-3" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('beginner-3', 'вода')">Проверить</button>
-            <p id="result-beginner-3" class="result"></p>
-            
-            <p>Вопрос 4: Переведи "Yes" (новый)</p>
-            <input type="text" id="quiz-beginner-4" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('beginner-4', 'да')">Проверить</button>
-            <p id="result-beginner-4" class="result"></p>
-            
-            <p>Вопрос 5: Переведи "No" (новый)</p>
-            <input type="text" id="quiz-beginner-5" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('beginner-5', 'нет')">Проверить</button>
-            <p id="result-beginner-5" class="result"></p>
-            
-            <button class="button" onclick="completeLevel('beginner')">Завершить уровень</button>
+            <h3>Beginner: Основные слова и фразы</h3>
+            <div class="progress-bar"><div class="progress-fill" id="progress-beginner" style="width: 0%;"></div></div>
+            <div id="flashcards-beginner"></div>
+            <div id="quizzes-beginner"></div>
+            <div id="award-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
+            <button class="button" onclick="repeatLevel('beginner')">Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-beginner" onclick="showLevel('intermediate')">Следующий уровень: Intermediate</button>
             <button class="button" onclick="hideLevels()">Вернуться к уровням</button>
         </div>
         
-        <!-- Уровень Intermediate (расширенный) -->
         <div id="intermediate-level" class="level-section">
             <h3>Intermediate: Фразы и грамматика</h3>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Weather" alt="Weather">
-                <p><strong>Phrase:</strong> What's the weather like?</p>
-                <p><strong>Translation:</strong> Какая погода?</p>
-                <p><strong>Example:</strong> What's the weather like today? It's sunny.</p>
-                <button class="audio-button" onclick="playAudio('weather')">Прослушать</button>
-                <audio id="audio-weather" src="https://freesound.org/data/previews/555/555666.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Travel" alt="Travel">
-                <p><strong>Word:</strong> Travel</p>
-                <p><strong>Translation:</strong> Путешествовать</p>
-                <p><strong>Example:</strong> I love to travel around the world.</p>
-                <button class="audio-button" onclick="playAudio('travel')">Прослушать</button>
-                <audio id="audio-travel" src="https://freesound.org/data/previews/777/777888.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Restaurant" alt="Restaurant">
-                <p><strong>Word:</strong> Restaurant</p>
-                <p><strong>Translation:</strong> Ресторан</p>
-                <p><strong>Example:</strong> Let's go to a restaurant for dinner.</p>
-                <button class="audio-button" onclick="playAudio('restaurant')">Прослушать</button>
-                <audio id="audio-restaurant" src="https://freesound.org/data/previews/999/999000.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Meeting" alt="Meeting">
-                <p><strong>Phrase:</strong> Nice to meet you</p>
-                <p><strong>Translation:</strong> Приятно познакомиться</p>
-                <p><strong>Example:</strong> Nice to meet you, my name is Alex.</p>
-                <button class="audio-button" onclick="playAudio('meeting')">Прослушать</button>
-                <audio id="audio-meeting" src="https://freesound.org/data/previews/111/111333.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Question" alt="Question">
-                <p><strong>Word:</strong> Question</p>
-                <p><strong>Translation:</strong> Вопрос</p>
-                <p><strong>Example:</strong> Do you have any questions?</p>
-                <button class="audio-button" onclick="playAudio('question')">Прослушать</button>
-                <audio id="audio-question" src="https://freesound.org/data/previews/222/222333.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Friend" alt="Friend">
-                <p><strong>Word:</strong> Friend</p>
-                <p><strong>Translation:</strong> Друг</p>
-                <p><strong>Example:</strong> My best friend lives in another city.</p>
-                <button class="audio-button" onclick="playAudio('friend')">Прослушать</button>
-                <audio id="audio-friend" src="https://freesound.org/data/previews/444/444555.mp3"></audio>
-            </div>
-            <div class="flashcard"> <!-- Новый -->
-                <img src="https://via.placeholder.com/300?text=Work" alt="Work">
-                <p><strong>Word:</strong> Work</p>
-                <p><strong>Translation:</strong> Работа</p>
-                <p><strong>Example:</strong> I work in an office.</p>
-                <button class="audio-button" onclick="playAudio('work')">Прослушать</button>
-                <audio id="audio-work" src="https://freesound.org/data/previews/666/666777.mp3"></audio>
-            </div>
-            <div class="flashcard"> <!-- Новый -->
-                <img src="https://via.placeholder.com/300?text=Time" alt="Time">
-                <p><strong>Phrase:</strong> What time is it?</p>
-                <p><strong>Translation:</strong> Который час?</p>
-                <p><strong>Example:</strong> What time is it? It's 3 PM.</p>
-                <button class="audio-button" onclick="playAudio('time')">Прослушать</button>
-                <audio id="audio-time" src="https://freesound.org/data/previews/888/888999.mp3"></audio>
-            </div>
-            <div class="flashcard"> <!-- Новый -->
-                <img src="https://via.placeholder.com/300?text=School" alt="School">
-                <p><strong>Word:</strong> School</p>
-                <p><strong>Translation:</strong> Школа</p>
-                <p><strong>Example:</strong> Children go to school.</p>
-                <button class="audio-button" onclick="playAudio('school')">Прослушать</button>
-                <audio id="audio-school" src="https://freesound.org/data/previews/000/000111.mp3"></audio>
-            </div>
-            
-            <h3>Квиз для Intermediate</h3>
-            <p>Вопрос 1: Переведи "I would like to order"</p>
-            <input type="text" id="quiz-intermediate-1" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('intermediate-1', 'я бы хотел заказать')">Проверить</button>
-            <p id="result-intermediate-1" class="result"></p>
-            
-            <p>Вопрос 2: Переведи "Excuse me"</p>
-            <input type="text" id="quiz-intermediate-2" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('intermediate-2', 'извините')">Проверить</button>
-            <p id="result-intermediate-2" class="result"></p>
-            
-            <p>Вопрос 3: Переведи "Appointment"</p>
-            <input type="text" id="quiz-intermediate-3" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('intermediate-3', 'встреча')">Проверить</button>
-            <p id="result-intermediate-3" class="result"></p>
-            
-            <p>Вопрос 4: Переведи "I'm sorry" (новый)</p>
-            <input type="text" id="quiz-intermediate-4" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('intermediate-4', 'извините')">Проверить</button>
-            <p id="result-intermediate-4" class="result"></p>
-            
-            <p>Вопрос 5: Переведи "Please" (новый)</p>
-            <input type="text" id="quiz-intermediate-5" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('intermediate-5', 'пожалуйста')">Проверить</button>
-            <p id="result-intermediate-5" class="result"></p>
-            
-            <button class="button" onclick="completeLevel('intermediate')">Завершить уровень</button>
+            <div class="progress-bar"><div class="progress-fill" id="progress-intermediate" style="width: 0%;"></div></div>
+            <div id="flashcards-intermediate"></div>
+            <div id="quizzes-intermediate"></div>
+            <div id="award-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
+            <button class="button" onclick="repeatLevel('intermediate')">Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-intermediate" onclick="showLevel('advanced')">Следующий уровень: Advanced</button>
             <button class="button" onclick="hideLevels()">Вернуться к уровням</button>
         </div>
         
-        <!-- Новый уровень Advanced -->
         <div id="advanced-level" class="level-section">
-            <h3>Advanced: Идиомы и бизнес-английский</h3>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Break a leg" alt="Break a leg">
-                <p><strong>Idiom:</strong> Break a leg</p>
-                <p><strong>Translation:</strong> Ни пуха ни пера (удачи)</p>
-                <p><strong>Example:</strong> Break a leg on your exam!</p>
-                <button class="audio-button" onclick="playAudio('breakaleg')">Прослушать</button>
-                <audio id="audio-breakaleg" src="https://freesound.org/data/previews/111/111222.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Meeting" alt="Meeting">
-                <p><strong>Phrase:</strong> Let's schedule a meeting</p>
-                <p><strong>Translation:</strong> Давайте назначим встречу</p>
-                <p><strong>Example:</strong> Let's schedule a meeting for next week.</p>
-                <button class="audio-button" onclick="playAudio('schedule')">Прослушать</button>
-                <audio id="audio-schedule" src="https://freesound.org/data/previews/333/333444.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Deadline" alt="Deadline">
-                <p><strong>Word:</strong> Deadline</p>
-                <p><strong>Translation:</strong> Срок сдачи</p>
-                <p><strong>Example:</strong> The deadline is Friday.</p>
-                <button class="audio-button" onclick="playAudio('deadline')">Прослушать</button>
-                <audio id="audio-deadline" src="https://freesound.org/data/previews/555/555666.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Opportunity" alt="Opportunity">
-                <p><strong>Word:</strong> Opportunity</p>
-                <p><strong>Translation:</strong> Возможность</p>
-                <p><strong>Example:</strong> This is a great opportunity.</p>
-                <button class="audio-button" onclick="playAudio('opportunity')">Прослушать</button>
-                <audio id="audio-opportunity" src="https://freesound.org/data/previews/777/777888.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Challenge" alt="Challenge">
-                <p><strong>Word:</strong> Challenge</p>
-                <p><strong>Translation:</strong> Вызов</p>
-                <p><strong>Example:</strong> It's a big challenge for me.</p>
-                <button class="audio-button" onclick="playAudio('challenge')">Прослушать</button>
-                <audio id="audio-challenge" src="https://freesound.org/data/previews/999/999000.mp3"></audio>
-            </div>
-            <div class="flashcard">
-                <img src="https://via.placeholder.com/300?text=Success" alt="Success">
-                <p><strong>Word:</strong> Success</p>
-                <p><strong>Translation:</strong> Успех</p>
-                <p><strong>Example:</strong> Hard work leads to success.</p>
-                <button class="audio-button" onclick="playAudio('success')">Прослушать</button>
-                <audio id="audio-success" src="https://freesound.org/data/previews/000/000111.mp3"></audio>
-            </div>
-            
-            <h3>Квиз для Advanced</h3>
-            <p>Вопрос 1: Переведи "Piece of cake"</p>
-            <input type="text" id="quiz-advanced-1" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('advanced-1', 'лёгкое дело')">Проверить</button>
-            <p id="result-advanced-1" class="result"></p>
-            
-            <p>Вопрос 2: Переведи "Hit the books"</p>
-            <input type="text" id="quiz-advanced-2" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('advanced-2', 'засесть за книги')">Проверить</button>
-            <p id="result-advanced-2" class="result"></p>
-            
-            <p>Вопрос 3: Переведи "Call it a day"</p>
-            <input type="text" id="quiz-advanced-3" class="quiz-input" placeholder="Ваш ответ (на русском)">
-            <button class="button" onclick="checkQuiz('advanced-3', 'завершить работу')">Проверить</button>
-            <p id="result-advanced-3" class="result"></p>
-            
-            <button class="button" onclick="completeLevel('advanced')">Завершить уровень</button>
+            <h3>Advanced: Идиомы и сложные конструкции</h3>
+            <div class="progress-bar"><div class="progress-fill" id="progress-advanced" style="width: 0%;"></div></div>
+            <div id="flashcards-advanced"></div>
+            <div id="quizzes-advanced"></div>
+            <div id="award-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
+            <button class="button" onclick="repeatLevel('advanced')">Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-advanced" onclick="showMainMenu()">Завершить английский (Вернуться в меню)</button>
             <button class="button" onclick="hideLevels()">Вернуться к уровням</button>
         </div>
     </div>
@@ -435,10 +219,11 @@
     <div id="about-section" class="section" style="display: none;">
         <h2>О нас</h2>
         <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь предпринимателем Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
+        <button class="button" onclick="showMainMenu()">Назад</button>
     </div>
     
     <script>
-        // Верификация: Работает только в Telegram
+        // Верификация
         const initData = Telegram.WebApp.initDataUnsafe;
         if (!initData || !initData.user) {
             document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
@@ -449,106 +234,254 @@
             Telegram.WebApp.MainButton.show();
         }
 
-        // Прогресс (localStorage)
-        let progress = JSON.parse(localStorage.getItem('tegyProgress')) || {};
-        function updateProgress() {
-            const totalQuizzes = 15; // Общее кол-во квизов (обновите при добавлении)
-            const completed = Object.keys(progress).length;
-            document.getElementById('progress-fill').style.width = `${(completed / totalQuizzes) * 100}%`;
-            document.getElementById('progress-text').innerText = `Прогресс: ${completed}/${totalQuizzes} квизов пройдено`;
+        // Данные уроков (массивы для динамической генерации)
+        const lessons = {
+            beginner: {
+                flashcards: [
+                    { word: 'Apple', translation: 'Яблоко', example: 'I eat an apple every day.', img: 'https://via.placeholder.com/300?text=Apple', audio: 'https://example.com/audio/apple.mp3', fact: 'Знаете ли вы, что Apple — это также компания?' },
+                    { word: 'Hello', translation: 'Привет', example: 'Hello, how are you?', img: 'https://via.placeholder.com/300?text=Hello', audio: 'https://example.com/audio/hello.mp3', fact: 'Hello используется в 100+ языках!' },
+                    { word: 'Book', translation: 'Книга', example: 'I read a book.', img: 'https://via.placeholder.com/300?text=Book', audio: 'https://example.com/audio/book.mp3', fact: 'Книги — лучший способ учить язык!' },
+                    { word: 'Cat', translation: 'Кот', example: 'The cat is sleeping.', img: 'https://via.placeholder.com/300?text=Cat', audio: 'https://example.com/audio/cat.mp3', fact: 'Коты спят 16 часов в день!' },
+                    { word: 'House', translation: 'Дом', example: 'My house is big.', img: 'https://via.placeholder.com/300?text=House', audio: 'https://example.com/audio/house.mp3', fact: 'Дом — там, где сердце.' },
+                    { word: 'Coffee', translation: 'Кофе', example: 'I drink coffee in the morning.', img: 'https://via.placeholder.com/300?text=Coffee', audio: 'https://example.com/audio/coffee.mp3', fact: 'Кофе — второй самый популярный напиток в мире!' },
+                    { word: 'Pizza', translation: 'Пицца', example: 'I like pizza with cheese.', img: 'https://via.placeholder.com/300?text=Pizza', audio: 'https://example.com/audio/pizza.mp3', fact: 'Пицца изобретена в Италии!' },
+                    { word: 'Breakfast', translation: 'Завтрак', example: 'Breakfast is important.', img: 'https://via.placeholder.com/300?text=Breakfast', audio: 'https://example.com/audio/breakfast.mp3', fact: 'Завтрак даёт энергию на день!' },
+                    { word: 'Juice', translation: 'Сок', example: 'I drink orange juice.', img: 'https://via.placeholder.com/300?text=Juice', audio: 'https://example.com/audio/juice.mp3', fact: 'Сок полезен для здоровья!' },
+                    { word: 'Fruit', translation: 'Фрукт', example: 'Fruit is healthy.', img: 'https://via.placeholder.com/300?text=Fruit', audio: 'https://example.com/audio/fruit.mp3', fact: 'Ешьте 5 фруктов в день!' }
+                ],
+                quizzes: [
+                    { question: 'Переведи "Dog"', answer: 'собака' },
+                    { question: 'Переведи "Thank you"', answer: 'спасибо' },
+                    { question: 'Переведи "Water"', answer: 'вода' },
+                    { question: 'Переведи "Friend"', answer: 'друг' },
+                    { question: 'Переведи "Eat"', answer: 'есть' },
+                    { question: 'Переведи "Morning"', answer: 'утро' },
+                    { question: 'Переведи "Tea"', answer: 'чай' },
+                    { question: 'Переведи "Bread"', answer: 'хлеб' }
+                ],
+                video: 'dQw4w9WgXcQ' // ID YouTube (замените)
+            },
+            intermediate: {
+                flashcards: [
+                    { word: 'Weather', translation: 'Погода', example: 'What\'s the weather like?', img: 'https://via.placeholder.com/300?text=Weather', audio: 'https://example.com/audio/weather.mp3', fact: 'Погода влияет на настроение!' },
+                    { word: 'Travel', translation: 'Путешествовать', example: 'I love to travel.', img: 'https://via.placeholder.com/300?text=Travel', audio: 'https://example.com/audio/travel.mp3', fact: 'Путешествия расширяют кругозор!' },
+                    { word: 'Restaurant', translation: 'Ресторан', example: 'Let\'s go to a restaurant.', img: 'https://via.placeholder.com/300?text=Restaurant', audio: 'https://example.com/audio/restaurant.mp3', fact: 'В ресторанах пробуйте новые блюда!' },
+                    { word: 'Nice to meet you', translation: 'Приятно познакомиться', example: 'Nice to meet you!', img: 'https://via.placeholder.com/300?text=Meeting', audio: 'https://example.com/audio/nice_to_meet_you.mp3', fact: 'Это стандартная фраза для знакомства.' },
+                    { word: 'Question', translation: 'Вопрос', example: 'Do you have any questions?', img: 'https://via.placeholder.com/300?text=Question', audio: 'https://example.com/audio/question.mp3', fact: 'Вопросы — ключ к знаниям!' },
+                    { word: 'Friend', translation: 'Друг', example: 'My best friend.', img: 'https://via.placeholder.com/300?text=Friend', audio: 'https://example.com/audio/friend.mp3', fact: 'Друзья — это семья, которую мы выбираем.' },
+                    { word: 'Job', translation: 'Работа', example: 'I have a new job.', img: 'https://via.placeholder.com/300?text=Job', audio: 'https://example.com/audio/job.mp3', fact: 'Работа должна приносить радость!' },
+                    { word: 'What time is it?', translation: 'Который час?', example: 'What time is it? It\'s 3 PM.', img: 'https://via.placeholder.com/300?text=Time', audio: 'https://example.com/audio/time.mp3', fact: 'Время — деньги!' },
+                    { word: 'School', translation: 'Школа', example: 'I go to school.', img: 'https://via.placeholder.com/300?text=School', audio: 'https://example.com/audio/school.mp3', fact: 'Школа — основа образования.' },
+                    { word: 'Vacation', translation: 'Отпуск', example: 'I\'m on vacation.', img: 'https://via.placeholder.com/300?text=Vacation', audio: 'https://example.com/audio/vacation.mp3', fact: 'Отпуск нужен для отдыха!' },
+                    { word: 'Hobby', translation: 'Хобби', example: 'My hobby is reading.', img: 'https://via.placeholder.com/300?text=Hobby', audio: 'https://example.com/audio/hobby.mp3', fact: 'Хобби делает жизнь интересной!' }
+                ],
+                quizzes: [
+                    { question: 'Переведи "I would like to order"', answer: 'я бы хотел заказать' },
+                    { question: 'Переведи "Excuse me"', answer: 'извините' },
+                    { question: 'Переведи "Appointment"', answer: 'встреча' },
+                    { question: 'Переведи "I\'m sorry"', answer: 'извините' },
+                    { question: 'Переведи "Weekend"', answer: 'выходные' },
+                    { question: 'Переведи "Favorite"', answer: 'любимый' },
+                    { question: 'Переведи "Hotel"', answer: 'отель' },
+                    { question: 'Переведи "Ticket"', answer: 'билет' },
+                    { question: 'Переведи "Map"', answer: 'карта' }
+                ],
+                video: 'M7lc1UVf-VE' // ID YouTube (замените)
+            },
+            advanced: {
+                flashcards: [
+                    { word: 'Break a leg', translation: 'Ни пуха ни пера', example: 'Break a leg on your exam!', img: 'https://via.placeholder.com/300?text=Break a leg', audio: 'https://example.com/audio/breakaleg.mp3', fact: 'Это театральная идиома для удачи!' },
+                    { word: 'Piece of cake', translation: 'Легко, как пирог', example: 'The test was a piece of cake.', img: 'https://via.placeholder.com/300?text=Piece of cake', audio: 'https://example.com/audio/pieceofcake.mp3', fact: 'Происходит от лёгких задач.' },
+                    { word: 'Hit the books', translation: 'Засесть за книги', example: 'I need to hit the books.', img: 'https://via.placeholder.com/300?text=Hit the books', audio: 'https://example.com/audio/hitthebooks.mp3', fact: 'Идиома для интенсивной учёбы.' },
+                    { word: 'Opportunity', translation: 'Возможность', example: 'This is a great opportunity.', img: 'https://via.placeholder.com/300?text=Opportunity', audio: 'https://example.com/audio/opportunity.mp3', fact: 'Возможности приходят к подготовленным.' },
+                    { word: 'Challenge', translation: 'Вызов', example: 'The project was a challenge.', img: 'https://via.placeholder.com/300?text=Challenge', audio: 'https://example.com/audio/challenge.mp3', fact: 'Вызовы делают нас сильнее!' },
+                    { word: 'Success', translation: 'Успех', example: 'Hard work leads to success.', img: 'https://via.placeholder.com/300?text=Success', audio: 'https://example.com/audio/success.mp3', fact: 'Успех — 1% вдохновения, 99% пота.' },
+                    { word: 'Burn the midnight oil', translation: 'Работать допоздна', example: 'I burned the midnight oil.', img: 'https://via.placeholder.com/300?text=Burn the midnight oil', audio: 'https://example.com/audio/burnmidnightoil.mp3', fact: 'Идиома из эпохи ламп!' },
+                    { word: 'Think outside the box', translation: 'Мыслить нестандартно', example: 'Think outside the box for solutions.', img: 'https://via.placeholder.com/300?text=Think outside the box', audio: 'https://example.com/audio/thinkoutsidethebox.mp3', fact: 'Ключ к инновациям!' },
+                    { word: 'Cut to the chase', translation: 'Перейти к делу', example: 'Let\'s cut to the chase.', img: 'https://via.placeholder.com/300?text=Cut to the chase', audio: 'https://example.com/audio/cuttothechase.mp3', fact: 'Из кино: перейти к погоне.' },
+                    { word: 'Business', translation: 'Бизнес', example: 'Business is booming.', img: 'https://via.placeholder.com/300?text=Business', audio: 'https://example.com/audio/business.mp3', fact: 'Бизнес — двигатель экономики.' },
+                    { word: 'Negotiation', translation: 'Переговоры', example: 'The negotiation was successful.', img: 'https://via.placeholder.com/300?text=Negotiation', audio: 'https://example.com/audio/negotiation.mp3', fact: 'Хорошие переговоры — искусство!' },
+                    { word: 'Innovation', translation: 'Инновация', example: 'Innovation drives progress.', img: 'https://via.placeholder.com/300?text=Innovation', audio: 'https://example.com/audio/innovation.mp3', fact: 'Инновации меняют мир!' }
+                ],
+                quizzes: [
+                    { question: 'Переведи "Under the weather"', answer: 'не в форме' },
+                    { question: 'Переведи "Call it a day"', answer: 'завершить работу' },
+                    { question: 'Переведи "Burn the midnight oil"', answer: 'работать допоздна' },
+                    { question: 'Переведи "Piece of cake"', answer: 'легко как пирог' },
+                    { question: 'Переведи "Hit the nail on the head"', answer: 'попасть в точку' },
+                    { question: 'Переведи "Cost an arm and a leg"', answer: 'очень дорого' },
+                    { question: 'Переведи "Meeting"', answer: 'встреча' },
+                    { question: 'Переведи "Deadline"', answer: 'срок' }
+                ],
+                video: '9bZkp7q19f0' // ID YouTube (замените)
+            }
+        };
+
+        // Прогресс (с localStorage)
+        let progress = JSON.parse(localStorage.getItem('tegyProgress')) || { beginner: 0, intermediate: 0, advanced: 0 };
+
+        // Функция генерации flashcards
+        function generateFlashcards(level) {
+            const container = document.getElementById(`flashcards-${level}`);
+            container.innerHTML = '';
+            lessons[level].flashcards.forEach(card => {
+                const div = document.createElement('div');
+                div.className = 'flashcard';
+                div.innerHTML = `
+                    <img src="${card.img}" alt="${card.word}" loading="lazy">
+                    <p><strong>Word/Phrase:</strong> ${card.word}</p>
+                    <p><strong>Translation:</strong> ${card.translation}</p>
+                    <p><strong>Example:</strong> ${card.example}</p>
+                    <p><strong>Fun Fact:</strong> ${card.fact}</p>
+                    <audio controls src="${card.audio}">Произношение</audio>
+                `;
+                container.appendChild(div);
+            });
+            // Видео
+            container.innerHTML += `<iframe src="https://www.youtube.com/embed/${lessons[level].video}" frameborder="0" allowfullscreen></iframe>`;
         }
 
-        // Функции навигации
+        // Функция генерации рандомных квизов (3–5 случайных)
+        function generateQuizzes(level) {
+            const container = document.getElementById(`quizzes-${level}`);
+            container.innerHTML = '<h3>Квиз (случайные вопросы)</h3>';
+            const shuffled = lessons[level].quizzes.sort(() => 0.5 - Math.random()).slice(0, 5); // 5 случайных
+            shuffled.forEach((q, index) => {
+                const id = `${level}-${index + 1}`;
+                container.innerHTML += `
+                    <p>Вопрос ${index + 1}: ${q.question}</p>
+                    <input type="text" id="quiz-${id}" class="quiz-input" placeholder="Ваш ответ (на русском)">
+                    <button class="button" onclick="checkQuiz('${id}', '${q.answer}', '${level}')">Проверить</button>
+                    <p id="result-${id}" class="result"></p>
+                `;
+            });
+        }
+
+        // Навигация и генерация контента при показе уровня
+        function showLevel(level) {
+            hideLevels();
+            const section = document.getElementById(`${level}-level`);
+            section.style.display = 'block';
+            generateFlashcards(level);
+            generateQuizzes(level);
+            updateProgress(level);
+            window.scrollTo(0, 0); // Автоскролл вверх
+        }
+
+        // Остальные функции
+        function toggleTheme() {
+            try {
+                document.body.classList.toggle('dark');
+                localStorage.setItem('tegyTheme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            } catch (e) {
+                console.error('Ошибка темы:', e);
+            }
+        }
+
         function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-            document.getElementById(`${sectionId}-section`).style.display = 'block';
-            Telegram.WebApp.MainButton.text = 'Вернуться в меню';
-            if (sectionId !== 'english') {
-                hideLevels();
-            } else {
-                updateProgress();
+            try {
+                document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+                document.getElementById(`${sectionId}-section`).style.display = 'block';
+                Telegram.WebApp.MainButton.text = 'Вернуться в меню';
+                if (sectionId !== 'english') hideLevels();
+            } catch (e) {
+                console.error('Ошибка навигации:', e);
             }
         }
 
         function showMainMenu() {
-            document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-            document.getElementById('main-menu').style.display = 'block';
-            Telegram.WebApp.MainButton.hide();
-            hideLevels();
-        }
-
-        function showLevel(level) {
-            hideLevels();
-            document.getElementById(`${level}-level`).style.display = 'block';
+            try {
+                document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+                document.getElementById('main-menu').style.display = 'block';
+                Telegram.WebApp.MainButton.hide();
+                hideLevels();
+            } catch (e) {
+                console.error('Ошибка меню:', e);
+            }
         }
 
         function hideLevels() {
             document.querySelectorAll('.level-section').forEach(sec => sec.style.display = 'none');
         }
 
-        // Универсальная функция для проверки квиза
-        function checkQuiz(quizId, correctAnswer) {
-            const answer = document.getElementById(`quiz-${quizId}`).value.trim().toLowerCase();
-            const result = document.getElementById(`result-${quizId}`);
-            if (answer === correctAnswer) {
-                result.innerText = 'Правильно! 🎉';
-                result.style.color = 'green';
-                progress[quizId] = true;
-                localStorage.setItem('tegyProgress', JSON.stringify(progress));
-                Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: quizId.split('-')[0], status: 'correct', score: Object.keys(progress).length }));
-                // Анимация конфетти
-                for (let i = 0; i < 20; i++) {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = `${Math.random() * 100}vw`;
-                    confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    document.body.appendChild(confetti);
-                    setTimeout(() => confetti.remove(), 1000);
+        // Повтор уровня
+        function repeatLevel(level) {
+            progress[level] = 0;
+            localStorage.setItem('tegyProgress', JSON.stringify(progress));
+            showLevel(level);
+        }
+
+        // Обновление прогресса
+        function updateProgress(level) {
+            const fill = document.getElementById(`progress-${level}`);
+            const quizCount = document.querySelectorAll(`#quizzes-${level} .quiz-input`).length;
+            const percent = (progress[level] / quizCount * 100) || 0;
+            fill.style.width = `${percent}%`;
+            if (percent >= 100) {
+                document.getElementById(`award-${level}`).style.display = 'block';
+                document.getElementById(`next-${level}`).style.display = 'block';
+                Telegram.WebApp.sendData(JSON.stringify({ award: level, status: 'completed' })); // Отправка награды боту
+            } else {
+                document.getElementById(`award-${level}`).style.display = 'none';
+                document.getElementById(`next-${level}`).style.display = 'none';
+            }
+        }
+
+        // Поиск по flashcards
+        function searchFlashcards() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            document.querySelectorAll('.flashcard').forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        // Проверка квиза
+        function checkQuiz(quizId, correctAnswer, level) {
+            try {
+                const answer = document.getElementById(`quiz-${quizId}`).value.trim().toLowerCase();
+                const result = document.getElementById(`result-${quizId}`);
+                if (answer === correctAnswer) {
+                    result.innerText = 'Правильно! 🎉';
+                    result.style.color = 'green';
+                    Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: level, status: 'correct' }));
+                    progress[level]++;
+                    localStorage.setItem('tegyProgress', JSON.stringify(progress));
+                    updateProgress(level);
+                    // Конфетти
+                    for (let i = 0; i < 20; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = `${Math.random() * 100}vw`;
+                        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                        document.body.appendChild(confetti);
+                        setTimeout(() => confetti.remove(), 1000);
+                    }
+                } else {
+                    result.innerText = 'Неправильно. Попробуй снова!';
+                    result.style.color = 'red';
+                    Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: level, status: 'incorrect' }));
                 }
-                updateProgress();
-            } else {
-                result.innerText = 'Неправильно. Попробуй снова!';
-                result.style.color = 'red';
-                Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: quizId.split('-')[0], status: 'incorrect' }));
+            } catch (e) {
+                console.error('Ошибка в квизе:', e);
+                const result = document.getElementById(`result-${quizId}`);
+                result.innerText = 'Ошибка! Попробуйте снова.';
+                result.style.color = 'orange';
             }
         }
 
-        // Завершение уровня
-        function completeLevel(level) {
-            alert(`Уровень ${level} завершён! Совет: Повторяйте слова ежедневно для лучшего запоминания.`);
-            hideLevels();
-        }
-
-        // Случайный квиз
-        function randomQuiz() {
-            const allQuestions = [
-                {question: 'Переведи "Dog"', correct: 'собака'},
-                {question: 'Переведи "Thank you"', correct: 'спасибо'},
-                // Добавьте все вопросы из уровней
-                {question: 'Переведи "Piece of cake"', correct: 'лёгкое дело'}
-            ];
-            const random = allQuestions[Math.floor(Math.random() * allQuestions.length)];
-            const userAnswer = prompt(random.question);
-            if (userAnswer.trim().toLowerCase() === random.correct) {
-                alert('Правильно! 🎉');
-                Telegram.WebApp.sendData(JSON.stringify({ quiz: 'random', status: 'correct' }));
-            } else {
-                alert('Неправильно. Правильный ответ: ' + random.correct);
+        // Инициализация при загрузке
+        function init() {
+            // Восстановление темы
+            if (localStorage.getItem('tegyTheme') === 'dark') {
+                document.body.classList.add('dark');
             }
+            // Показать главное меню
+            showMainMenu();
         }
 
-        // Переключатель тем
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-        }
-
-        // Воспроизведение аудио
-        function playAudio(id) {
-            document.getElementById(`audio-${id}`).play();
-        }
-
-        // Инициализация прогресса
-        updateProgress();
+        // Вызов инициализации
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
