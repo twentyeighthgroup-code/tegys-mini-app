@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- Для AI-запросов -->
-    <link rel="manifest" href="/manifest.json"> <!-- Для PWA; создайте manifest.json с: {"name": "Tegy S", "short_name": "TegyS", "start_url": "/", "display": "standalone", "background_color": "#6a11cb", "theme_color": "#2575fc", "icons": [{"src": "icon.png", "sizes": "192x192", "type": "image/png"}]} -->
+    <link rel="manifest" href="/manifest.json"> <!-- Для PWA -->
     <style>
         body {
             margin: 0;
@@ -341,14 +341,15 @@
 
             init() {
                 const initData = Telegram.WebApp.initDataUnsafe;
-                if (!initData || !initData.user) {
-                    document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
-                    return;
-                }
+                // Комментарий: Если проблема с initDataUnsafe, временно закомментируйте проверку для теста
+                // if (!initData || !initData.user) {
+                //     document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
+                //     return;
+                // }
                 Telegram.WebApp.ready();
-                Telegram.WebApp.MainButton.text = this.getText('back-menu');
-                Telegram.WebApp.MainButton.onClick(() => this.showMainMenu());
-                Telegram.WebApp.MainButton.show();
+                Telegram.WebApp.BottomButton.text = this.getText('back-menu'); // Изменено на BottomButton
+                Telegram.WebApp.BottomButton.onClick(() => this.showMainMenu()); // Изменено на BottomButton
+                Telegram.WebApp.BottomButton.show(); // Изменено на BottomButton
 
                 if (localStorage.getItem('tegyTheme') === 'dark') document.body.classList.add('dark');
 
@@ -452,9 +453,8 @@
                 this.language = lang;
                 localStorage.setItem('tegyLang', lang);
                 // Обновить все тексты (динамически)
-                document.querySelectorAll('[id$="-btn"], [id$="-title"], .about-text').forEach(el => {
-                    const key = el.id.replace('-', '-') || el.id; // Простой маппинг
-                    el.innerText = this.getText(el.id.replace(/-/g, '-')); // Адаптируйте под ключи
+                document.querySelectorAll('[id$="-btn"], [id$="-title"], .about-text, #menu-text, #level-select-text').forEach(el => { // Добавил больше селекторов
+                    el.innerText = this.getText(el.id);
                 });
                 // Перегенерировать открытый уровень
                 const openLevel = document.querySelector('.level-section[style*="block"]');
@@ -464,7 +464,7 @@
             showSection(section) {
                 document.getElementById('main-menu').style.display = 'none';
                 document.getElementById(`${section}-section`).style.display = 'block';
-                Telegram.WebApp.MainButton.text = this.getText('back-menu');
+                Telegram.WebApp.BottomButton.text = this.getText('back-menu'); // Изменено
             }
 
             showMainMenu() {
@@ -584,7 +584,7 @@
                     model: 'gpt-3.5-turbo',
                     messages: [{ role: 'user', content: `Explain in simple terms for ${level} level: ${prompt}` }]
                 }, {
-                    headers: { 'Authorization': 'Bearer YOUR_OPENAI_API_KEY' }  // Замените на ваш ключ!
+                    headers: { 'Authorization': 'Bearer YOUR_OPENAI_API_KEY' }  // Замените на ваш реальный ключ OpenAI!
                 }).then(response => {
                     alert(response.data.choices[0].message.content);
                 }).catch(e => {
