@@ -213,87 +213,123 @@
     
     <div id="main-menu" class="section">
         <p id="menu-text">Выберите направление для обучения:</p>
-        <select id="language-switch" onchange="switchLanguage(this.value)">
+        <select id="language-switch" onchange="app.switchLanguage(this.value)">
             <option value="ru">Русский</option>
             <option value="en">English</option>
         </select>
-        <button class="button" onclick="showSection('english')"><i class="fas fa-book"></i> <span id="english-btn">Английский язык</span></button>
-        <button class="button" onclick="showSection('about')"><i class="fas fa-info-circle"></i> <span id="about-btn">О нас</span></button>
-        <button class="button" onclick="toggleTheme()"><i class="fas fa-moon"></i> <span id="theme-btn">Тёмная тема</span></button>
+        <button class="button" onclick="app.showSection('english')"><i class="fas fa-book"></i> <span id="english-btn">Английский язык</span></button>
+        <button class="button" onclick="app.showSection('about')"><i class="fas fa-info-circle"></i> <span id="about-btn">О нас</span></button>
+        <button class="button" onclick="app.toggleTheme()"><i class="fas fa-moon"></i> <span id="theme-btn">Тёмная тема</span></button>
         <p class="streak" id="streak-display">Стрик: 0 дней 🔥</p>
     </div>
     
     <div id="english-section" class="section" style="display: none;">
         <h2 id="english-title">Уроки английского языка</h2>
-        <input type="text" class="search-input" id="search" placeholder="Поиск по словам..." oninput="searchFlashcards()">
+        <input type="text" class="search-input" id="search" placeholder="Поиск по словам..." oninput="app.searchFlashcards()">
         <p id="level-select-text">Выберите уровень:</p>
-        <button class="button" onclick="showLevel('beginner')"><i class="fas fa-star"></i> <span id="beginner-btn">Beginner (Начинающий)</span></button>
-        <button class="button" onclick="showLevel('intermediate')"><i class="fas fa-star-half-alt"></i> <span id="intermediate-btn">Intermediate (Средний)</span></button>
-        <button class="button" onclick="showLevel('advanced')"><i class="fas fa-star"></i> <span id="advanced-btn">Advanced (Продвинутый)</span></button>
-        <button class="button" onclick="generateDailyChallenge()"><i class="fas fa-bolt"></i> <span id="challenge-btn">Ежедневный вызов</span></button>
-        <button class="button" onclick="exportProgress()"><i class="fas fa-download"></i> <span id="export-btn">Экспорт прогресса</span></button>
+        <button class="button" onclick="app.showLevel('beginner')"><i class="fas fa-star"></i> <span id="beginner-btn">Beginner (Начинающий)</span></button>
+        <button class="button" onclick="app.showLevel('intermediate')"><i class="fas fa-star-half-alt"></i> <span id="intermediate-btn">Intermediate (Средний)</span></button>
+        <button class="button" onclick="app.showLevel('advanced')"><i class="fas fa-star"></i> <span id="advanced-btn">Advanced (Продвинутый)</span></button>
+        <button class="button" onclick="app.generateDailyChallenge()"><i class="fas fa-bolt"></i> <span id="challenge-btn">Ежедневный вызов</span></button>
+        <button class="button" onclick="app.exportProgress()"><i class="fas fa-download"></i> <span id="export-btn">Экспорт прогресса</span></button>
         
-        <!-- Уровни (динамические) -->
-        <div id="beginner-level" class="level-section">
+        <!-- Beginner уровень -->
+        <div id="beginner-level" class="level-section" style="display: none;">
             <h3 id="beginner-title">Beginner: Основные слова и фразы</h3>
             <div class="progress-bar"><div class="progress-fill" id="progress-beginner" style="width: 0%;"></div></div>
             <div class="flashcard-grid" id="flashcards-beginner"></div>
             <div id="quizzes-beginner"></div>
             <div class="drag-container" id="drag-beginner">
-                <h4 id="drag-title">Сопоставьте слова (Drag-and-Drop)</h4>
+                <h4>Сопоставьте слова (Drag-and-Drop)</h4>
                 <div class="drag-items"></div>
                 <div class="drop-zones"></div>
             </div>
-            <button class="button" id="ai-beginner" onclick="askAI('beginner')"><i class="fas fa-robot"></i> <span id="ai-btn">Спроси AI об объяснении</span></button>
+            <button class="button" onclick="app.askAI('beginner')"><i class="fas fa-robot"></i> <span>Спроси AI об объяснении</span></button>
             <div id="award-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('beginner')"><span id="repeat-btn">Повторить уровень</span></button>
-            <button class="button" style="display: none;" id="next-beginner" onclick="showLevel('intermediate')"><span id="next-btn">Следующий уровень: Intermediate</span></button>
-            <button class="button" onclick="hideLevels()"><span id="back-btn">Вернуться к уровням</span></button>
+            <button class="button" onclick="app.repeatLevel('beginner')"><span>Повторить уровень</span></button>
+            <button class="button" style="display: none;" id="next-beginner" onclick="app.showLevel('intermediate')"><span>Следующий уровень: Intermediate</span></button>
+            <button class="button" onclick="app.hideLevels()"><span>Вернуться к уровням</span></button>
         </div>
         
-        <div id="intermediate-level" class="level-section">
+        <!-- Intermediate уровень -->
+        <div id="intermediate-level" class="level-section" style="display: none;">
             <h3 id="intermediate-title">Intermediate: Фразы и грамматика</h3>
             <div class="progress-bar"><div class="progress-fill" id="progress-intermediate" style="width: 0%;"></div></div>
             <div class="flashcard-grid" id="flashcards-intermediate"></div>
             <div id="quizzes-intermediate"></div>
             <div class="drag-container" id="drag-intermediate">
-                <h4 id="drag-title">Сопоставьте фразы</h4>
+                <h4>Сопоставьте фразы</h4>
                 <div class="drag-items"></div>
                 <div class="drop-zones"></div>
             </div>
-            <button class="button" id="ai-intermediate" onclick="askAI('intermediate')"><i class="fas fa-robot"></i> <span id="ai-btn">Спроси AI</span></button>
+            <button class="button" onclick="app.askAI('intermediate')"><i class="fas fa-robot"></i> <span>Спроси AI</span></button>
             <div id="award-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('intermediate')"><span id="repeat-btn">Повторить уровень</span></button>
-            <button class="button" style="display: none;" id="next-intermediate" onclick="showLevel('advanced')"><span id="next-btn">Следующий уровень: Advanced</span></button>
-            <button class="button" onclick="hideLevels()"><span id="back-btn">Вернуться к уровням</span></button>
+            <button class="button" onclick="app.repeatLevel('intermediate')"><span>Повторить уровень</span></button>
+            <button class="button" style="display: none;" id="next-intermediate" onclick="app.showLevel('advanced')"><span>Следующий уровень: Advanced</span></button>
+            <button class="button" onclick="app.hideLevels()"><span>Вернуться к уровням</span></button>
         </div>
         
-        <div id="advanced-level" class="level-section">
+        <!-- Advanced уровень -->
+        <div id="advanced-level" class="level-section" style="display: none;">
             <h3 id="advanced-title">Advanced: Идиомы и сложные конструкции</h3>
             <div class="progress-bar"><div class="progress-fill" id="progress-advanced" style="width: 0%;"></div></div>
             <div class="flashcard-grid" id="flashcards-advanced"></div>
             <div id="quizzes-advanced"></div>
             <div class="drag-container" id="drag-advanced">
-                <h4 id="drag-title">Сопоставьте идиомы</h4>
+                <h4>Сопоставьте идиомы</h4>
                 <div class="drag-items"></div>
                 <div class="drop-zones"></div>
             </div>
-            <button class="button" id="ai-advanced" onclick="askAI('advanced')"><i class="fas fa-robot"></i> <span id="ai-btn">Спроси AI</span></button>
+            <button class="button" onclick="app.askAI('advanced')"><i class="fas fa-robot"></i> <span>Спроси AI</span></button>
             <div id="award-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('advanced')"><span id="repeat-btn">Повторить уровень</span></button>
-            <button class="button" style="display: none;" id="next-advanced" onclick="showMainMenu()"><span id="finish-btn">Завершить английский (Вернуться в меню)</span></button>
-            <button class="button" onclick="hideLevels()"><span id="back-btn">Вернуться к уровням</span></button>
+            <button class="button" onclick="app.repeatLevel('advanced')"><span>Повторить уровень</span></button>
+            <button class="button" style="display: none;" id="next-advanced" onclick="app.showMainMenu()"><span>Завершить английский (Вернуться в меню)</span></button>
+            <button class="button" onclick="app.hideLevels()"><span>Вернуться к уровням</span></button>
         </div>
     </div>
     
     <div id="about-section" class="section" style="display: none;">
         <h2 id="about-title">О нас</h2>
         <p class="about-text" id="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь предпринимателем Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
-        <button class="button" onclick="showMainMenu()"><span id="back-btn">Назад</span></button>
+        <button class="button" onclick="app.showMainMenu()"><span id="back-btn">Назад</span></button>
     </div>
     
     <script>
-        // Класс для управления приложением (модульность)
+        // Пример данных уроков (расширьте своими данными)
+        const lessons = {
+            beginner: {
+                flashcards: [
+                    { word: 'Hello', translation: 'Привет', image: 'https://via.placeholder.com/150?text=Hello' },
+                    { word: 'Thank you', translation: 'Спасибо', image: 'https://via.placeholder.com/150?text=Thank+You' },
+                    { word: 'Yes', translation: 'Да', image: 'https://via.placeholder.com/150?text=Yes' }
+                ],
+                quizzes: [
+                    { question: 'Как сказать "Привет" по-английски?', answer: 'hello' },
+                    { question: 'Как сказать "Спасибо" по-английски?', answer: 'thank you' }
+                ]
+            },
+            intermediate: {
+                flashcards: [
+                    { word: 'How are you?', translation: 'Как дела?', image: 'https://via.placeholder.com/150?text=How+Are+You' },
+                    { word: 'Good morning', translation: 'Доброе утро', image: 'https://via.placeholder.com/150?text=Good+Morning' }
+                ],
+                quizzes: [
+                    { question: 'Как сказать "Как дела?" по-английски?', answer: 'how are you' },
+                    { question: 'Как сказать "Доброе утро" по-английски?', answer: 'good morning' }
+                ]
+            },
+            advanced: {
+                flashcards: [
+                    { word: 'Break a leg', translation: 'Ни пуха ни пера', image: 'https://via.placeholder.com/150?text=Break+A+Leg' },
+                    { word: 'Piece of cake', translation: 'Легко', image: 'https://via.placeholder.com/150?text=Piece+Of+Cake' }
+                ],
+                quizzes: [
+                    { question: 'Что значит идиома "Break a leg"?', answer: 'good luck' },
+                    { question: 'Что значит "Piece of cake"?', answer: 'easy' }
+                ]
+            }
+        };
+
         class TegyApp {
             constructor() {
                 this.language = localStorage.getItem('tegyLang') || 'ru';
@@ -304,7 +340,6 @@
             }
 
             init() {
-                // Верификация
                 const initData = Telegram.WebApp.initDataUnsafe;
                 if (!initData || !initData.user) {
                     document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
@@ -315,10 +350,8 @@
                 Telegram.WebApp.MainButton.onClick(() => this.showMainMenu());
                 Telegram.WebApp.MainButton.show();
 
-                // Восстановление темы
                 if (localStorage.getItem('tegyTheme') === 'dark') document.body.classList.add('dark');
 
-                // Проверка стриков
                 const today = new Date().toDateString();
                 if (this.lastVisit !== today) {
                     this.streak = this.lastVisit === new Date(Date.now() - 86400000).toDateString() ? this.streak + 1 : 1;
@@ -327,18 +360,13 @@
                 }
                 document.getElementById('streak-display').innerText = `${this.getText('streak')}: ${this.streak} дней 🔥`;
 
-                // Switch языка
                 document.getElementById('language-switch').value = this.language;
                 this.switchLanguage(this.language);
 
-                // PWA Service Worker
                 if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('/sw.js')  // Создайте sw.js с кэшированием файлов
-                        .then(() => console.log('PWA ready!'))
-                        .catch(e => console.error('PWA error:', e));
+                    navigator.serviceWorker.register('/sw.js').then(() => console.log('PWA ready!')).catch(e => console.error('PWA error:', e));
                 }
 
-                // Показать меню
                 this.showMainMenu();
             }
 
@@ -367,7 +395,18 @@
                         'finish-btn': 'Завершить английский (Вернуться в меню)',
                         'back-btn': 'Вернуться к уровням',
                         'about-title': 'О нас',
-                        'about-text': 'Tegcompany — инновационная компания, основанная в Республике Беларусь предпринимателем Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.'
+                        'about-text': 'Tegcompany — инновационная компания, основанная в Республике Беларусь предпринимателем Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.',
+                        'correct': 'Правильно! 🎉',
+                        'incorrect': 'Неправильно. Попробуй снова!',
+                        'checked': 'Проверено',
+                        'error': 'Ошибка! Попробуйте снова.',
+                        'ai-prompt': 'Введите слово или фразу для объяснения:',
+                        'ai-error': 'Ошибка AI. Проверьте ключ или соединение.',
+                        'daily-challenge': 'Ежедневный вызов',
+                        'answer-placeholder': 'Ваш ответ',
+                        'check': 'Проверить',
+                        'share': 'Поделиться',
+                        'progress-share': 'Мой прогресс на уровне'
                     },
                     en: {
                         'back-menu': 'Back to Menu',
@@ -392,7 +431,18 @@
                         'finish-btn': 'Finish English (Back to Menu)',
                         'back-btn': 'Back to Levels',
                         'about-title': 'About Us',
-                        'about-text': 'Tegcompany is an innovative company founded in the Republic of Belarus by entrepreneur Yurkevich Artem Igorevich. From its inception, Tegcompany has focused on developing intelligent solutions, starting with the creation of the first chatbots with artificial intelligence elements — Tegych P and Beeprav P. These projects became the starting point in the company's development, laying the foundation for future technological initiatives.'
+                        'about-text': 'Tegcompany is an innovative company founded in the Republic of Belarus by entrepreneur Yurkevich Artem Igorevich. From its inception, Tegcompany has focused on developing intelligent solutions, starting with the creation of the first chatbots with artificial intelligence elements — Tegych P and Beeprav P. These projects became the starting point in the company's development, laying the foundation for future technological initiatives.',
+                        'correct': 'Correct! 🎉',
+                        'incorrect': 'Incorrect. Try again!',
+                        'checked': 'Checked',
+                        'error': 'Error! Try again.',
+                        'ai-prompt': 'Enter word or phrase for explanation:',
+                        'ai-error': 'AI error. Check key or connection.',
+                        'daily-challenge': 'Daily Challenge',
+                        'answer-placeholder': 'Your answer',
+                        'check': 'Check',
+                        'share': 'Share',
+                        'progress-share': 'My progress on level'
                     }
                 };
                 return texts[this.language][key] || key;
@@ -401,49 +451,82 @@
             switchLanguage(lang) {
                 this.language = lang;
                 localStorage.setItem('tegyLang', lang);
-                // Обновить текст
-                document.getElementById('menu-text').innerText = this.getText('level-select-text');
-                document.getElementById('english-btn').innerText = this.getText('english-btn');
-                document.getElementById('about-btn').innerText = this.getText('about-btn');
-                document.getElementById('theme-btn').innerText = this.getText('theme-btn');
-                document.getElementById('english-title').innerText = this.getText('english-title');
-                document.getElementById('level-select-text').innerText = this.getText('level-select-text');
-                document.getElementById('beginner-btn').innerText = this.getText('beginner-btn');
-                document.getElementById('intermediate-btn').innerText = this.getText('intermediate-btn');
-                document.getElementById('advanced-btn').innerText = this.getText('advanced-btn');
-                document.getElementById('challenge-btn').innerText = this.getText('challenge-btn');
-                document.getElementById('export-btn').innerText = this.getText('export-btn');
-                document.getElementById('beginner-title').innerText = this.getText('beginner-title');
-                document.getElementById('intermediate-title').innerText = this.getText('intermediate-title');
-                document.getElementById('advanced-title').innerText = this.getText('advanced-title');
-                document.getElementById('drag-title').innerText = this.getText('drag-title');
-                document.getElementById('ai-btn').innerText = this.getText('ai-btn');
-                document.getElementById('repeat-btn').innerText = this.getText('repeat-btn');
-                document.getElementById('next-btn').innerText = this.getText('next-btn');
-                document.getElementById('finish-btn').innerText = this.getText('finish-btn');
-                document.getElementById('back-btn').innerText = this.getText('back-btn');
-                document.getElementById('about-title').innerText = this.getText('about-title');
-                document.getElementById('about-text').innerText = this.getText('about-text');
-                // Перегенерировать контент если уровень открыт
+                // Обновить все тексты (динамически)
+                document.querySelectorAll('[id$="-btn"], [id$="-title"], .about-text').forEach(el => {
+                    const key = el.id.replace('-', '-') || el.id; // Простой маппинг
+                    el.innerText = this.getText(el.id.replace(/-/g, '-')); // Адаптируйте под ключи
+                });
+                // Перегенерировать открытый уровень
                 const openLevel = document.querySelector('.level-section[style*="block"]');
                 if (openLevel) this.showLevel(openLevel.id.split('-')[0]);
             }
 
-            // ... (остальные функции: generateFlashcards, generateQuizzes, showLevel, etc. из предыдущей версии)
+            showSection(section) {
+                document.getElementById('main-menu').style.display = 'none';
+                document.getElementById(`${section}-section`).style.display = 'block';
+                Telegram.WebApp.MainButton.text = this.getText('back-menu');
+            }
 
-            // Проверка квиза (завершённая версия)
+            showMainMenu() {
+                document.querySelectorAll('.section:not(#main-menu)').forEach(sec => sec.style.display = 'none');
+                document.getElementById('main-menu').style.display = 'block';
+            }
+
+            toggleTheme() {
+                document.body.classList.toggle('dark');
+                localStorage.setItem('tegyTheme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            }
+
+            showLevel(level) {
+                this.hideLevels();
+                document.getElementById(`${level}-level`).style.display = 'block';
+                this.generateFlashcards(level);
+                this.generateQuizzes(level);
+                this.setupDragAndDrop(level);
+                this.updateProgress(level);
+            }
+
+            hideLevels() {
+                document.querySelectorAll('.level-section').forEach(lvl => lvl.style.display = 'none');
+            }
+
+            generateFlashcards(level) {
+                const grid = document.getElementById(`flashcards-${level}`);
+                grid.innerHTML = '';
+                lessons[level].flashcards.forEach(card => {
+                    const div = document.createElement('div');
+                    div.className = 'flashcard';
+                    div.innerHTML = `<img src="${card.image}" alt="${card.word}"><p>${card.word} - ${card.translation}</p>`;
+                    div.onclick = () => div.classList.toggle('flipped');
+                    grid.appendChild(div);
+                });
+            }
+
+            generateQuizzes(level) {
+                const quizzesDiv = document.getElementById(`quizzes-${level}`);
+                quizzesDiv.innerHTML = '';
+                lessons[level].quizzes.forEach((quiz, index) => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<p>${quiz.question}</p>
+                        <input type="text" id="quiz-${level}-${index}" class="quiz-input" placeholder="${this.getText('answer-placeholder')}">
+                        <button class="button" onclick="app.checkQuiz('${level}-${index}', '${quiz.answer}', '${level}')">${this.getText('check')}</button>
+                        <p id="result-${level}-${index}" class="result"></p>`;
+                    quizzesDiv.appendChild(div);
+                });
+            }
+
             checkQuiz(quizId, correctAnswer, level) {
                 try {
-                    const answer = document.getElementById(`quiz-${quizId}`).value.trim().toLowerCase();
+                    const input = document.getElementById(`quiz-${quizId}`);
+                    const answer = input.value.trim().toLowerCase();
                     const result = document.getElementById(`result-${quizId}`);
-                    if (answer === correctAnswer) {
-                        result.innerText = this.getText('correct') || 'Правильно! 🎉';
+                    if (answer === correctAnswer.toLowerCase()) {
+                        result.innerText = this.getText('correct');
                         result.style.color = 'green';
                         Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: level, status: 'correct' }));
                         this.progress[level]++;
                         localStorage.setItem('tegyProgress', JSON.stringify(this.progress));
                         this.updateProgress(level);
-                        // Конфетти (завершённый цикл)
                         for (let i = 0; i < 20; i++) {
                             const confetti = document.createElement('div');
                             confetti.className = 'confetti';
@@ -452,56 +535,79 @@
                             confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
                             confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
                             document.body.appendChild(confetti);
-                            setTimeout(() => confetti.remove(), 3000); // Увеличил время для эффекта
+                            setTimeout(() => confetti.remove(), 3000);
                         }
                     } else {
-                        result.innerText = this.getText('incorrect') || 'Неправильно. Попробуй снова!';
+                        result.innerText = this.getText('incorrect');
                         result.style.color = 'red';
                         Telegram.WebApp.sendData(JSON.stringify({ quiz: 'english', level: level, status: 'incorrect' }));
                     }
-                    // Отключить кнопку после ответа, чтобы избежать повторных отправок
-                    const button = result.previousElementSibling;
+                    input.disabled = true;
+                    const button = input.nextElementSibling;
                     button.disabled = true;
-                    button.innerText = this.getText('checked') || 'Проверено';
+                    button.innerText = this.getText('checked');
                 } catch (e) {
                     console.error('Ошибка в квизе:', e);
-                    const result = document.getElementById(`result-${quizId}`);
-                    result.innerText = this.getText('error') || 'Ошибка! Попробуйте снова.';
-                    result.style.color = 'orange';
+                    document.getElementById(`result-${quizId}`).innerText = this.getText('error');
                 }
             }
 
-            // Функция для AI (ChatGPT)
+            updateProgress(level) {
+                const prog = this.progress[level];
+                const max = lessons[level].quizzes.length + lessons[level].flashcards.length; // Пример максимума
+                const width = Math.min((prog / max) * 100, 100);
+                document.getElementById(`progress-${level}`).style.width = `${width}%`;
+                if (width >= 100) {
+                    document.getElementById(`award-${level}`).style.display = 'block';
+                    document.getElementById(`next-${level}`).style.display = 'block';
+                    Telegram.WebApp.sendData(JSON.stringify({ award: true, level: level }));
+                }
+            }
+
+            repeatLevel(level) {
+                this.progress[level] = 0;
+                localStorage.setItem('tegyProgress', JSON.stringify(this.progress));
+                this.showLevel(level);
+            }
+
+            searchFlashcards() {
+                const query = document.getElementById('search').value.toLowerCase();
+                document.querySelectorAll('.flashcard').forEach(card => {
+                    card.style.display = card.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+                });
+            }
+
             askAI(level) {
-                const prompt = prompt(this.getText('ai-prompt') || 'Введите слово или фразу для объяснения:');
+                const prompt = window.prompt(this.getText('ai-prompt'));
                 if (!prompt) return;
                 axios.post('https://api.openai.com/v1/chat/completions', {
                     model: 'gpt-3.5-turbo',
                     messages: [{ role: 'user', content: `Explain in simple terms for ${level} level: ${prompt}` }]
                 }, {
-                    headers: { 'Authorization': 'Bearer YOUR_OPENAI_API_KEY' }  // Замените на ваш ключ
+                    headers: { 'Authorization': 'Bearer YOUR_OPENAI_API_KEY' }  // Замените на ваш ключ!
                 }).then(response => {
                     alert(response.data.choices[0].message.content);
                 }).catch(e => {
                     console.error('AI error:', e);
-                    alert(this.getText('ai-error') || 'Ошибка AI. Проверьте ключ или соединение.');
+                    alert(this.getText('ai-error'));
                 });
             }
 
-            // Генерация ежедневного вызова (случайный квиз)
             generateDailyChallenge() {
                 const levels = ['beginner', 'intermediate', 'advanced'];
                 const randomLevel = levels[Math.floor(Math.random() * levels.length)];
                 const randomQuiz = lessons[randomLevel].quizzes[Math.floor(Math.random() * lessons[randomLevel].quizzes.length)];
                 const challengeDiv = document.createElement('div');
-                challengeDiv.innerHTML = `<p>${this.getText('daily-challenge') || 'Ежедневный вызов'}: ${randomQuiz.question} (Уровень: ${randomLevel.capitalize()})</p>
-                    <input type="text" id="challenge-input" class="quiz-input" placeholder="${this.getText('answer-placeholder') || 'Ваш ответ'}">
-                    <button class="button" onclick="app.checkQuiz('challenge', '${randomQuiz.answer}', '${randomLevel}')">${this.getText('check') || 'Проверить'}</button>
+                challengeDiv.id = 'daily-challenge-div';
+                challengeDiv.innerHTML = `<p>${this.getText('daily-challenge')}: ${randomQuiz.question} (Level: ${randomLevel})</p>
+                    <input type="text" id="challenge-input" class="quiz-input" placeholder="${this.getText('answer-placeholder')}">
+                    <button class="button" onclick="app.checkQuiz('challenge', '${randomQuiz.answer}', '${randomLevel}')">${this.getText('check')}</button>
                     <p id="result-challenge" class="result"></p>`;
-                document.getElementById('english-section').appendChild(challengeDiv);
+                const englishSection = document.getElementById('english-section');
+                if (document.getElementById('daily-challenge-div')) return; // Не дублировать
+                englishSection.appendChild(challengeDiv);
             }
 
-            // Экспорт прогресса
             exportProgress() {
                 const data = JSON.stringify(this.progress);
                 const blob = new Blob([data], { type: 'application/json' });
@@ -513,54 +619,41 @@
                 URL.revokeObjectURL(url);
             }
 
-            // Поделиться результатом
-            shareProgress(level) {
-                const prog = this.progress[level];
-                Telegram.WebApp.showPopup({
-                    title: this.getText('share') || 'Поделиться',
-                    message: `${this.getText('progress-share') || 'Мой прогресс на уровне'} ${level}: ${prog} баллов!`,
-                    buttons: [{ type: 'ok', text: 'OK' }]
-                });
-            }
-
-            // Drag-and-Drop (пример для matching)
             setupDragAndDrop(level) {
                 const container = document.getElementById(`drag-${level}`);
                 container.innerHTML = `<h4>${this.getText('drag-title')}</h4><div class="drag-items"></div><div class="drop-zones"></div>`;
-                const words = lessons[level].flashcards.slice(0, 4).map(f => f.word);
-                const translations = lessons[level].flashcards.slice(0, 4).map(f => f.translation).sort(() => 0.5 - Math.random());
-                words.forEach(w => {
+                const words = lessons[level].flashcards.slice(0, 3).map(f => f.word); // Пример 3 элементов
+                const translations = lessons[level].flashcards.slice(0, 3).map(f => f.translation).sort(() => Math.random() - 0.5);
+                words.forEach((w, index) => {
                     const item = document.createElement('div');
                     item.className = 'drag-item';
                     item.draggable = true;
                     item.innerText = w;
                     item.ondragstart = e => e.dataTransfer.setData('text', w);
-                    document.querySelector(`#drag-${level} .drag-items`).appendChild(item);
+                    container.querySelector('.drag-items').appendChild(item);
                 });
-                translations.forEach(t => {
+                translations.forEach((t, index) => {
                     const zone = document.createElement('div');
                     zone.className = 'drop-zone';
                     zone.innerText = t;
                     zone.ondrop = e => {
                         e.preventDefault();
                         const data = e.dataTransfer.getData('text');
-                        if (lessons[level].flashcards.find(f => f.word === data && f.translation === t)) {
-                            zone.style.background = 'green';
-                            update_progress(this, level, 1); // Балл за правильный match
-                        } else {
-                            zone.style.background = 'red';
+                        const correct = lessons[level].flashcards.find(f => f.word === data && f.translation === t);
+                        zone.style.background = correct ? 'green' : 'red';
+                        if (correct) {
+                            Telegram.WebApp.sendData(JSON.stringify({ type: 'drag', status: 'correct', level: level }));
+                            this.progress[level]++;
+                            localStorage.setItem('tegyProgress', JSON.stringify(this.progress));
+                            this.updateProgress(level);
                         }
                     };
                     zone.ondragover = e => e.preventDefault();
-                    document.querySelector(`#drag-${level} .drop-zones`).appendChild(zone);
+                    container.querySelector('.drop-zones').appendChild(zone);
                 });
             }
-
-            // Инициализация (с проверкой стриков и т.д.)
-            // (из предыдущей версии, с добавлением this.setupDragAndDrop(level) в showLevel)
         }
 
-        // Создание экземпляра приложения
         const app = new TegyApp();
     </script>
 </body>
