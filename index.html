@@ -171,6 +171,12 @@
             border-radius: 5px;
             border: none;
             width: 80%;
+            background: #fff;
+            color: #333;
+        }
+        body.dark .quiz-input {
+            background: #555;
+            color: #ddd;
         }
         .result {
             font-size: 1.2em;
@@ -187,7 +193,6 @@
             position: absolute;
             width: 10px;
             height: 10px;
-            background: #f00;
             animation: confetti-fall 1s linear;
         }
         @keyframes confetti-fall {
@@ -199,6 +204,9 @@
             height: 10px;
             border-radius: 5px;
             margin: 10px 0;
+        }
+        body.dark .progress-bar {
+            background: #666;
         }
         .progress-fill {
             background: #4caf50;
@@ -219,6 +227,12 @@
             margin-bottom: 10px;
             border-radius: 5px;
             border: none;
+            background: #fff;
+            color: #333;
+        }
+        body.dark .search-input {
+            background: #555;
+            color: #ddd;
         }
         iframe {
             width: 100%;
@@ -255,14 +269,26 @@
         .favorites-list {
             margin-top: 20px;
         }
+        .remove-fav {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
         footer {
             width: 100%;
             text-align: center;
             padding: 10px 0;
             background: rgba(0,0,0,0.2);
-            position: fixed;
-            bottom: 0;
+            margin-top: auto;
             font-size: 0.8em;
+        }
+        .loading {
+            text-align: center;
+            color: #fff;
         }
     </style>
 </head>
@@ -276,11 +302,13 @@
         <button class="button" onclick="showSection('english')"><i class="fas fa-book"></i> Английский язык</button>
         <button class="button" onclick="showSection('math')"><i class="fas fa-calculator"></i> Математика</button>
         <button class="button" onclick="showSection('history')"><i class="fas fa-history"></i> История</button>
+        <button class="button" onclick="showSection('programming')"><i class="fas fa-code"></i> Программирование</button>
         <button class="button" onclick="showSection('profile')"><i class="fas fa-user"></i> Профиль</button>
         <button class="button" onclick="showSection('about')"><i class="fas fa-info-circle"></i> О нас</button>
         <button class="button" onclick="toggleTheme()"><i class="fas fa-moon"></i> Тёмная тема</button>
     </div>
     
+    <!-- English Section (как в оригинале, с полным контентом) -->
     <div id="english-section" class="section" style="display: none;">
         <h2>Уроки английского языка</h2>
         <input type="text" class="search-input" id="search-english" placeholder="Поиск по словам..." oninput="searchFlashcards('english')">
@@ -288,7 +316,7 @@
             <h3>Ежедневный вызов</h3>
             <p id="daily-word"></p>
             <input type="text" id="daily-input" class="quiz-input" placeholder="Перевод">
-            <button class="button" onclick="checkDaily()">Проверить</button>
+            <button class="button" onclick="checkDaily('english')">Проверить</button>
             <p id="daily-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
@@ -330,11 +358,10 @@
         </div>
         <div class="favorites-list" id="favorites-english">
             <h3>Избранные карточки</h3>
-            <!-- Favorites will be appended here -->
         </div>
     </div>
     
-    <!-- Math Section -->
+    <!-- Math Section (полный) -->
     <div id="math-section" class="section" style="display: none;">
         <h2>Уроки математики</h2>
         <input type="text" class="search-input" id="search-math" placeholder="Поиск по темам..." oninput="searchFlashcards('math')">
@@ -342,7 +369,7 @@
             <h3>Ежедневный вызов</h3>
             <p id="daily-math-question"></p>
             <input type="text" id="daily-math-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDailyMath()">Проверить</button>
+            <button class="button" onclick="checkDaily('math')">Проверить</button>
             <p id="daily-math-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
@@ -361,7 +388,6 @@
             <button class="button" onclick="hideLevels('math')">Вернуться к уровням</button>
         </div>
         
-        <!-- Similar for intermediate and advanced -->
         <div id="math-intermediate-level" class="level-section">
             <h3>Intermediate: Геометрия и алгебра</h3>
             <div class="progress-bar"><div class="progress-fill" id="progress-math-intermediate" style="width: 0%;"></div></div>
@@ -385,11 +411,10 @@
         </div>
         <div class="favorites-list" id="favorites-math">
             <h3>Избранные карточки</h3>
-            <!-- Favorites will be appended here -->
         </div>
     </div>
     
-    <!-- History Section (similar structure) -->
+    <!-- History Section (полный) -->
     <div id="history-section" class="section" style="display: none;">
         <h2>Уроки истории</h2>
         <input type="text" class="search-input" id="search-history" placeholder="Поиск по событиям..." oninput="searchFlashcards('history')">
@@ -397,7 +422,7 @@
             <h3>Ежедневный вызов</h3>
             <p id="daily-history-question"></p>
             <input type="text" id="daily-history-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDailyHistory()">Проверить</button>
+            <button class="button" onclick="checkDaily('history')">Проверить</button>
             <p id="daily-history-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
@@ -416,7 +441,6 @@
             <button class="button" onclick="hideLevels('history')">Вернуться к уровням</button>
         </div>
         
-        <!-- Similar for intermediate and advanced -->
         <div id="history-intermediate-level" class="level-section">
             <h3>Intermediate: Средневековье</h3>
             <div class="progress-bar"><div class="progress-fill" id="progress-history-intermediate" style="width: 0%;"></div></div>
@@ -440,7 +464,59 @@
         </div>
         <div class="favorites-list" id="favorites-history">
             <h3>Избранные карточки</h3>
-            <!-- Favorites will be appended here -->
+        </div>
+    </div>
+
+    <!-- Programming Section (новый) -->
+    <div id="programming-section" class="section" style="display: none;">
+        <h2>Уроки программирования</h2>
+        <input type="text" class="search-input" id="search-programming" placeholder="Поиск по терминам..." oninput="searchFlashcards('programming')">
+        <div id="daily-challenge-programming" class="daily-challenge" style="display: none;">
+            <h3>Ежедневный вызов</h3>
+            <p id="daily-programming-question"></p>
+            <input type="text" id="daily-programming-input" class="quiz-input" placeholder="Ответ">
+            <button class="button" onclick="checkDaily('programming')">Проверить</button>
+            <p id="daily-programming-result" class="result"></p>
+        </div>
+        <p>Выберите уровень:</p>
+        <button class="button" onclick="showLevel('programming', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
+        <button class="button" onclick="showLevel('programming', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
+        <button class="button" onclick="showLevel('programming', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
+        
+        <div id="programming-beginner-level" class="level-section">
+            <h3>Beginner: Основы</h3>
+            <div class="progress-bar"><div class="progress-fill" id="progress-programming-beginner" style="width: 0%;"></div></div>
+            <div id="flashcards-programming-beginner"></div>
+            <div id="quizzes-programming-beginner" class="quiz-container"></div>
+            <div id="award-programming-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
+            <button class="button" onclick="repeatLevel('programming', 'beginner')">Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-programming-beginner" onclick="showLevel('programming', 'intermediate')">Следующий уровень</button>
+            <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
+        </div>
+        
+        <div id="programming-intermediate-level" class="level-section">
+            <h3>Intermediate: Циклы и условия</h3>
+            <div class="progress-bar"><div class="progress-fill" id="progress-programming-intermediate" style="width: 0%;"></div></div>
+            <div id="flashcards-programming-intermediate"></div>
+            <div id="quizzes-programming-intermediate" class="quiz-container"></div>
+            <div id="award-programming-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
+            <button class="button" onclick="repeatLevel('programming', 'intermediate')">Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-programming-intermediate" onclick="showLevel('programming', 'advanced')">Следующий уровень</button>
+            <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
+        </div>
+        
+        <div id="programming-advanced-level" class="level-section">
+            <h3>Advanced: OOP и алгоритмы</h3>
+            <div class="progress-bar"><div class="progress-fill" id="progress-programming-advanced" style="width: 0%;"></div></div>
+            <div id="flashcards-programming-advanced"></div>
+            <div id="quizzes-programming-advanced" class="quiz-container"></div>
+            <div id="award-programming-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
+            <button class="button" onclick="repeatLevel('programming', 'advanced')">Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-programming-advanced" onclick="showMainMenu()">Завершить</button>
+            <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
+        </div>
+        <div class="favorites-list" id="favorites-programming">
+            <h3>Избранные карточки</h3>
         </div>
     </div>
     
@@ -457,122 +533,296 @@
     
     <div id="about-section" class="section" style="display: none;">
         <h2>О нас</h2>
-        <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь предпринимателем Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
+        <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
         <button class="button" onclick="showMainMenu()">Назад</button>
     </div>
     
     <footer>
-        &copy; 2025 Tegcompany. Все права защищены.
+        &copy; 2024 Tegcompany. Все права защищены.
     </footer>
     
     <script>
-        // Верификация Telegram
-        const initData = Telegram.WebApp.initDataUnsafe;
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        const initData = tg.initDataUnsafe;
         if (!initData || !initData.user) {
             document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
         } else {
-            Telegram.WebApp.ready();
-            Telegram.WebApp.MainButton.text = 'Вернуться в меню';
-            Telegram.WebApp.MainButton.onClick(() => showMainMenu());
-            Telegram.WebApp.MainButton.show();
-            Telegram.WebApp.expand();
+            tg.ready();
+            tg.MainButton.text = 'Вернуться в меню';
+            tg.MainButton.onClick(showMainMenu);
+            tg.MainButton.show();
+            tg.expand();
+            tg.BackButton.onClick(showMainMenu);
+            tg.BackButton.show();
         }
 
-        // Данные уроков (расширены)
+        // Полные данные уроков
         const subjects = {
             english: {
                 beginner: {
                     flashcards: [
-                        { word: 'Apple', translation: 'Яблоко', example: 'I eat an apple every day.', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6', audio: 'https://example.com/audio/apple.mp3', fact: 'Apple — это также компания, основанная Стивом Джобсом.' },
-                        // Добавлено больше карточек (всего 20+)
-                        { word: 'Banana', translation: 'Банан', example: 'Bananas are yellow.', img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c276b63', audio: 'https://example.com/audio/banana.mp3', fact: 'Бананы — это ягоды!' },
-                        { word: 'Car', translation: 'Машина', example: 'I drive a car.', img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d', audio: 'https://example.com/audio/car.mp3', fact: 'Первая машина была изобретена в 1886 году.' },
-                        // ... (добавьте еще аналогично, для краткости опущено)
+                        { word: 'Apple', translation: 'Яблоко', example: 'I eat an apple every day.', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300', fact: 'Apple — это также компания, основанная Стивом Джобсом.' },
+                        { word: 'Banana', translation: 'Банан', example: 'Bananas are yellow.', img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c276b63?w=300', fact: 'Бананы — это ягоды!' },
+                        { word: 'Car', translation: 'Машина', example: 'I drive a car.', img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300', fact: 'Первая машина была изобретена в 1886 году.' },
+                        { word: 'Dog', translation: 'Собака', example: 'The dog barks.', img: 'https://images.unsplash.com/photo-1534361960057-1988672b3f2f?w=300', fact: 'Собаки — лучшие друзья человека.' },
+                        { word: 'House', translation: 'Дом', example: 'This is my house.', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300', fact: 'Средний дом имеет 3 комнаты.' }
                     ],
                     quizzes: [
                         { question: 'Переведи "Dog"', answer: 'собака', options: ['кошка', 'собака', 'птица', 'рыба'] },
-                        // Добавлены опции для множественного выбора, больше квизов
                         { question: 'Переведи "Thank you"', answer: 'спасибо', options: ['привет', 'спасибо', 'пока', 'да'] },
-                        // ... (расширено до 15+)
+                        { question: 'Переведи "Hello"', answer: 'привет', options: ['пока', 'привет', 'да', 'нет'] },
+                        { question: 'Переведи "Water"', answer: 'вода', options: ['огонь', 'вода', 'земля', 'воздух'] },
+                        { question: 'Переведи "Book"', answer: 'книга', options: ['фильм', 'книга', 'песня', 'игра'] }
                     ],
                     video: 'dQw4w9WgXcQ'
                 },
-                // Аналогично для intermediate и advanced, с добавлением больше контента
-                intermediate: { /* ... expanded ... */ },
-                advanced: { /* ... expanded ... */ }
+                intermediate: {
+                    flashcards: [
+                        { word: 'Meeting', translation: 'Встреча', example: 'We have a meeting at 10 AM.', img: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=300', fact: 'Meetings can be virtual now.' },
+                        { word: 'Computer', translation: 'Компьютер', example: 'I use a computer for work.', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300', fact: 'First computer was ENIAC in 1945.' },
+                        { word: 'Friend', translation: 'Друг', example: 'She is my best friend.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300', fact: 'Friendships last longer than romance.' },
+                        { word: 'Travel', translation: 'Путешествие', example: 'I love to travel abroad.', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300', fact: 'Travel broadens the mind.' },
+                        { word: 'Music', translation: 'Музыка', example: 'I listen to music every day.', img: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=300', fact: 'Music therapy heals the soul.' }
+                    ],
+                    quizzes: [
+                        { question: 'Переведи "Meeting"', answer: 'встреча', options: ['праздник', 'встреча', 'работа', 'еда'] },
+                        { question: 'Переведи "Computer"', answer: 'компьютер', options: ['телефон', 'компьютер', 'книга', 'машина'] },
+                        { question: 'Переведи "Friend"', answer: 'друг', options: ['враг', 'друг', 'семья', 'учитель'] },
+                        { question: 'Переведи "Travel"', answer: 'путешествие', options: ['работа', 'путешествие', 'сон', 'еда'] },
+                        { question: 'Переведи "Music"', answer: 'музыка', options: ['танец', 'музыка', 'спорт', 'искусство'] }
+                    ],
+                    video: 'M7lc1UVf-VE'
+                },
+                advanced: {
+                    flashcards: [
+                        { word: 'Idiom: Break a leg', translation: 'Удачи!', example: 'Break a leg on your exam!', img: 'https://images.unsplash.com/photo-1544965888-5e92e1e9e9e1?w=300', fact: 'This idiom comes from theater.' },
+                        { word: 'Passive voice', translation: 'Пассивный залог', example: 'The book was read by me.', img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300', fact: 'Used for emphasis on action.' },
+                        { word: 'Metaphor', translation: 'Метафора', example: 'Time is money.', img: 'https://images.unsplash.com/photo-1549497538-da9d8ec99e97?w=300', fact: 'A figure of speech without "like".' },
+                        { word: 'Conditional', translation: 'Условное наклонение', example: 'If it rains, I will stay home.', img: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=300', fact: 'Has zero, first, second, third types.' },
+                        { word: 'Phrasal verb: Give up', translation: 'Сдаваться', example: 'Don\'t give up on your dreams.', img: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=300', fact: 'Common in English speech.' }
+                    ],
+                    quizzes: [
+                        { question: 'Что значит "Break a leg"?', answer: 'удачи', options: ['сломать ногу', 'удачи', 'бежать', 'падать'] },
+                        { question: 'Пример пассивного залога?', answer: 'Книга была прочитана', options: ['Я читаю книгу', 'Книга была прочитана', 'Книга читает меня', 'Я прочитал книгу'] },
+                        { question: 'Что такое метафора?', answer: 'фигура речи', options: ['еда', 'фигура речи', 'цвет', 'число'] },
+                        { question: 'Пример условного?', answer: 'если дождь, останусь дома', options: ['Я иду домой', 'если дождь, останусь дома', 'Дом мокрый', 'Дождь идет'] },
+                        { question: 'Give up значит?', answer: 'сдаваться', options: ['давать вверх', 'сдаваться', 'получать', 'брать'] }
+                    ],
+                    video: '9bZkp7q19f0'
+                }
             },
             math: {
                 beginner: {
                     flashcards: [
-                        { term: 'Addition', explanation: 'Сложение чисел', example: '2 + 3 = 5', img: 'https://images.unsplash.com/photo-1635372720855-3d7777c4ff21', fact: 'Сложение коммутативно: a + b = b + a' },
-                        // Добавлено 15+ карточек
-                        { term: 'Subtraction', explanation: 'Вычитание', example: '5 - 2 = 3', img: 'https://images.unsplash.com/photo-1635372720855-3d7777c4ff21', fact: 'Вычитание не коммутативно.' },
-                        // ...
+                        { term: 'Addition', explanation: 'Сложение чисел', example: '2 + 3 = 5', img: 'https://images.unsplash.com/photo-1635372720855-3d7777c4ff21?w=300', fact: 'Сложение коммутативно: a + b = b + a' },
+                        { term: 'Subtraction', explanation: 'Вычитание', example: '5 - 2 = 3', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=300', fact: 'Вычитание не коммутативно.' },
+                        { term: 'Multiplication', explanation: 'Умножение', example: '4 * 2 = 8', img: 'https://images.unsplash.com/photo-1585964481499-2be451621bb5?w=300', fact: 'Умножение на 0 = 0.' },
+                        { term: 'Division', explanation: 'Деление', example: '6 / 2 = 3', img: 'https://images.unsplash.com/photo-1567492031773-4f5f8e9c996b?w=300', fact: 'Деление на 0 невозможно.' },
+                        { term: 'Number', explanation: 'Число', example: '5 is a prime number.', img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300', fact: 'Числа бывают натуральными, целыми и т.д.' }
                     ],
                     quizzes: [
                         { question: '2 + 2 = ?', answer: '4', options: ['3', '4', '5', '6'] },
-                        // 10+ квизов
+                        { question: '5 - 3 = ?', answer: '2', options: ['1', '2', '3', '4'] },
+                        { question: '4 * 3 = ?', answer: '12', options: ['10', '12', '15', '8'] },
+                        { question: '8 / 2 = ?', answer: '4', options: ['3', '4', '5', '2'] },
+                        { question: 'Что такое 1 + 1?', answer: '2', options: ['1', '2', '3', '0'] }
                     ],
                     video: 'M7lc1UVf-VE'
                 },
-                // Intermediate and advanced similar
+                intermediate: {
+                    flashcards: [
+                        { term: 'Equation', explanation: 'Уравнение', example: 'x + 2 = 5, x=3', img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300', fact: 'Решение уравнения — найти x.' },
+                        { term: 'Triangle', explanation: 'Треугольник', example: 'Сумма углов = 180°', img: 'https://images.unsplash.com/photo-1570549717069-33bed1ebafed?w=300', fact: 'Виды: равносторонний, прямоугольный.' },
+                        { term: 'Variable', explanation: 'Переменная', example: 'Let x = 10', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300', fact: 'Используется в алгебре.' },
+                        { term: 'Area', explanation: 'Площадь', example: 'Площадь прямоугольника = длина * ширина', img: 'https://images.unsplash.com/photo-1549576490-b0b4831e8f1f?w=300', fact: 'Для круга: πr².' },
+                        { term: 'Fraction', explanation: 'Дробь', example: '1/2 + 1/2 = 1', img: 'https://images.unsplash.com/photo-1581287053821-6927a274775e?w=300', fact: 'Дроби упрощаются.' }
+                    ],
+                    quizzes: [
+                        { question: 'Решить x + 3 = 7', answer: '4', options: ['3', '4', '5', '10'] },
+                        { question: 'Сумма углов треугольника?', answer: '180', options: ['90', '180', '360', '270'] },
+                        { question: 'Площадь 2x3 прямоугольника?', answer: '6', options: ['5', '6', '8', '1'] },
+                        { question: '1/2 * 2 = ?', answer: '1', options: ['0.5', '1', '2', '0'] },
+                        { question: 'Что такое переменная?', answer: 'x или y', options: ['число', 'x или y', 'операция', 'фигура'] }
+                    ],
+                    video: 'dQw4w9WgXcQ'
+                },
+                advanced: {
+                    flashcards: [
+                        { term: 'Derivative', explanation: 'Производная', example: 'd/dx (x²) = 2x', img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300', fact: 'Используется в физике.' },
+                        { term: 'Integral', explanation: 'Интеграл', example: '∫x dx = (1/2)x²', img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300', fact: 'Обратна производной.' },
+                        { term: 'Mean', explanation: 'Среднее', example: 'Среднее [1,2,3] = 2', img: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=300', fact: 'В статистике.' },
+                        { term: 'Probability', explanation: 'Вероятность', example: 'P(heads) = 0.5', img: 'https://images.unsplash.com/photo-1550751827-4f5f8e9c996b?w=300', fact: 'От 0 до 1.' },
+                        { term: 'Limit', explanation: 'Предел', example: 'lim x→0 sin(x)/x = 1', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300', fact: 'Основы калькулюса.' }
+                    ],
+                    quizzes: [
+                        { question: 'Производная x²?', answer: '2x', options: ['x', '2x', 'x²', '0'] },
+                        { question: 'Интеграл x?', answer: '(1/2)x²', options: ['x', '(1/2)x²', 'x³', '2x'] },
+                        { question: 'Среднее [1,3,5]?', answer: '3', options: ['2', '3', '4', '9'] },
+                        { question: 'Вероятность монеты?', answer: '0.5', options: ['0', '0.5', '1', '2'] },
+                        { question: 'Предел sin(x)/x при 0?', answer: '1', options: ['0', '1', '∞', 'sin(0)'] }
+                    ],
+                    video: '9bZkp7q19f0'
+                }
             },
             history: {
                 beginner: {
                     flashcards: [
-                        { event: 'Ancient Egypt', explanation: 'Цивилизация фараонов', example: 'Построили пирамиды', img: 'https://images.unsplash.com/photo-1506354660007-9d744c9d0c0c', fact: 'Пирамиды стоят более 4500 лет.' },
-                        // 15+ карточек
+                        { event: 'Ancient Egypt', explanation: 'Цивилизация фараонов', example: 'Построили пирамиды', img: 'https://images.unsplash.com/photo-1506354660007-9d744c9d0c0c?w=300', fact: 'Пирамиды стоят более 4500 лет.' },
+                        { event: 'Roman Empire', explanation: 'Империя Цезаря', example: 'Строили акведуки', img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=300', fact: 'Длилась 500 лет.' },
+                        { event: 'Greek Philosophy', explanation: 'Философия Сократа', example: 'Демократия в Афинах', img: 'https://images.unsplash.com/photo-1578632354571-0de2c52e5563?w=300', fact: 'Сократ: "Я знаю, что ничего не знаю".' },
+                        { event: 'Stone Age', explanation: 'Каменный век', example: 'Орудия из камня', img: 'https://images.unsplash.com/photo-1570549717069-33bed1ebafed?w=300', fact: 'Длился миллионы лет.' },
+                        { event: 'Invention of Wheel', explanation: 'Изобретение колеса', example: 'Около 3500 г. до н.э.', img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300', fact: 'Изменло транспорт.' }
                     ],
                     quizzes: [
-                        { question: 'Кто построил пирамиды?', answer: 'Египтяне', options: ['Римляне', 'Греки', 'Египтяне', 'Майя'] },
-                        // 10+ 
+                        { question: 'Кто построил пирамиды?', answer: 'египтяне', options: ['римляне', 'греки', 'египтяне', 'майя'] },
+                        { question: 'Столица Римской империи?', answer: 'рома', options: ['атены', 'рома', 'спарта', 'египет'] },
+                        { question: 'Философ: "Познай себя"?', answer: 'сократ', options: ['платон', 'сократ', 'аристотель', 'гераклит'] },
+                        { question: 'Каменный век — это?', answer: 'древний период', options: ['будущее', 'древний период', 'средневековье', 'современность'] },
+                        { question: 'Когда изобрели колесо?', answer: '3500 до н.э.', options: ['1000 н.э.', '3500 до н.э.', '500 н.э.', '0'] }
                     ],
                     video: '9bZkp7q19f0'
                 },
-                // Similar for others
+                intermediate: {
+                    flashcards: [
+                        { event: 'Middle Ages', explanation: 'Средневековье', example: 'Рыцари и замки', img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=300', fact: 'Длилось 1000 лет.' },
+                        { event: 'Renaissance', explanation: 'Возрождение', example: 'Да Винчи и Микеланджело', img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300', fact: 'Началось в Италии.' },
+                        { event: 'Crusades', explanation: 'Крестовые походы', example: '1095–1291 гг.', img: 'https://images.unsplash.com/photo-1578632354571-0de2c52e5563?w=300', fact: 'За Святую землю.' },
+                        { event: 'Black Death', explanation: 'Чёрная смерть', example: 'Чума 1347 г.', img: 'https://images.unsplash.com/photo-1550751827-4f5f8e9c996b?w=300', fact: 'Убила 30–60% Европы.' },
+                        { event: 'Feudalism', explanation: 'Феодализм', example: 'Короли, вассалы, крестьяне', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300', fact: 'Система земель.' }
+                    ],
+                    quizzes: [
+                        { question: 'Период рыцарей?', answer: 'средневековье', options: ['древний мир', 'средневековье', 'новое время', 'будущее'] },
+                        { question: 'Художник Ренессанса?', answer: 'да винчи', options: ['сократ', 'да винчи', 'цезарь', 'колумб'] },
+                        { question: 'Крестовые походы за?', answer: 'святую землю', options: ['золото', 'святую землю', 'территории', 'мир'] },
+                        { question: 'Чума 1347?', answer: 'чёрная смерть', options: ['пандемия', 'чёрная смерть', 'война', 'голод'] },
+                        { question: 'Феодализм — это?', answer: 'система вассалов', options: ['демократия', 'система вассалов', 'капитализм', 'коммунизм'] }
+                    ],
+                    video: 'M7lc1UVf-VE'
+                },
+                advanced: {
+                    flashcards: [
+                        { event: 'World War I', explanation: 'Первая мировая война', example: '1914–1918 гг.', img: 'https://images.unsplash.com/photo-1567492031773-4f5f8e9c996b?w=300', fact: 'Убила 16 млн человек.' },
+                        { event: 'Industrial Revolution', explanation: 'Промышленная революция', example: '1760–1840 гг.', img: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=300', fact: 'Машины изменили мир.' },
+                        { event: 'Cold War', explanation: 'Холодная война', example: '1947–1991 гг.', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=300', fact: 'США vs СССР.' },
+                        { event: 'Fall of Berlin Wall', explanation: 'Падение Берлинской стены', example: '1989 г.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300', fact: 'Конец холодной войны.' },
+                        { event: 'Digital Age', explanation: 'Цифровая эра', example: 'Интернет с 1990-х', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300', fact: 'Смартфоны везде.' }
+                    ],
+                    quizzes: [
+                        { question: 'Первая мировая — годы?', answer: '1914-1918', options: ['1939-1945', '1914-1918', '1812', '1492'] },
+                        { question: 'Промышленная революция — когда?', answer: '1760-1840', options: ['1500', '1760-1840', '2000', '1900'] },
+                        { question: 'Холодная война: кто vs кто?', answer: 'ссср vs сша', options: ['англии vs франции', 'ссср vs сша', 'египта vs греции', 'рим vs греция'] },
+                        { question: 'Падение стены — 1989?', answer: 'берлинской', options: ['китайской', 'берлинской', 'римской', 'египетской'] },
+                        { question: 'Цифровая эра началась с?', answer: 'интернета', options: ['колеса', 'интернета', 'паровоза', 'книги'] }
+                    ],
+                    video: 'dQw4w9WgXcQ'
+                }
+            },
+            programming: {
+                beginner: {
+                    flashcards: [
+                        { term: 'Variable', explanation: 'Переменная', example: 'let x = 5;', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300', fact: 'Хранит данные в памяти.' },
+                        { term: 'Function', explanation: 'Функция', example: 'function hello() { console.log("Hi"); }', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300', fact: 'Блок кода для повторного использования.' },
+                        { term: 'String', explanation: 'Строка', example: '"Hello World"', img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300', fact: 'Текст в кавычках.' },
+                        { term: 'Number', explanation: 'Число', example: '42 или 3.14', img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300', fact: 'Целое или дробное.' },
+                        { term: 'Console', explanation: 'Консоль', example: 'console.log("Debug");', img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300', fact: 'Для вывода сообщений.' }
+                    ],
+                    quizzes: [
+                        { question: 'Что такое переменная?', answer: 'хранит данные', options: ['функция', 'хранит данные', 'строка', 'число'] },
+                        { question: 'Пример функции?', answer: 'function()', options: ['let x=5', 'function()', '"text"', '42'] },
+                        { question: 'Строка в JS?', answer: '"hello"', options: ['let', '"hello"', 'function', 'console'] },
+                        { question: 'Число: 3.14 — это?', answer: 'дробное', options: ['строка', 'дробное', 'функция', 'консоль'] },
+                        { question: 'console.log для?', answer: 'вывода', options: ['ввода', 'вывода', 'хранения', 'вычисления'] }
+                    ],
+                    video: 'dQw4w9WgXcQ'
+                },
+                intermediate: {
+                    flashcards: [
+                        { term: 'Loop: For', explanation: 'Цикл for', example: 'for(let i=0; i<5; i++) { ... }', img: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=300', fact: 'Для повторений известного количества.' },
+                        { term: 'If Statement', explanation: 'Условие if', example: 'if(x > 0) { ... }', img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300', fact: 'Проверяет условие.' },
+                        { term: 'Array', explanation: 'Массив', example: '[1,2,3]', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300', fact: 'Список элементов.' },
+                        { term: 'While Loop', explanation: 'Цикл while', example: 'while(condition) { ... }', img: 'https://images.unsplash.com/photo-1578632354571-0de2c52e5563?w=300', fact: 'Повторяет пока условие true.' },
+                        { term: 'Boolean', explanation: 'Логический тип', example: 'true или false', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300', fact: 'Для условий.' }
+                    ],
+                    quizzes: [
+                        { question: 'Цикл for для?', answer: 'повторений', options: ['условий', 'повторений', 'хранения', 'текста'] },
+                        { question: 'If проверяет?', answer: 'условие', options: ['число', 'условие', 'строку', 'массив'] },
+                        { question: 'Массив: [1,2] — это?', answer: 'список', options: ['число', 'список', 'функция', 'строка'] },
+                        { question: 'While повторяет пока?', answer: 'true', options: ['false', 'true', '0', '"stop"'] },
+                        { question: 'Boolean: true/false — для?', answer: 'логики', options: ['математики', 'логики', 'текста', 'графики'] }
+                    ],
+                    video: 'M7lc1UVf-VE'
+                },
+                advanced: {
+                    flashcards: [
+                        { term: 'Class', explanation: 'Класс (ООП)', example: 'class Dog { bark() { ... } }', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300', fact: 'Шаблон для объектов.' },
+                        { term: 'Inheritance', explanation: 'Наследование', example: 'class Puppy extends Dog { ... }', img: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=300', fact: 'Передача свойств.' },
+                        { term: 'Algorithm: Sort', explanation: 'Алгоритм сортировки', example: 'Bubble sort: сравни и поменяй', img: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=300', fact: 'O(n²) сложность.' },
+                        { term: 'Recursion', explanation: 'Рекурсия', example: 'function factorial(n) { if(n<=1) return 1; return n * factorial(n-1); }', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=300', fact: 'Функция вызывает себя.' },
+                        { term: 'API', explanation: 'Интерфейс программирования', example: 'fetch("https://api.example.com")', img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300', fact: 'Для связи приложений.' }
+                    ],
+                    quizzes: [
+                        { question: 'Класс в OOP?', answer: 'шаблон', options: ['функция', 'шаблон', 'массив', 'строка'] },
+                        { question: 'Наследование: extends?', answer: 'да', options: ['нет', 'да', 'только числа', 'только строки'] },
+                        { question: 'Bubble sort — это?', answer: 'сортировка', options: ['поиск', 'сортировка', 'хранение', 'вывод'] },
+                        { question: 'Рекурсия: функция?', answer: 'вызывает себя', options: ['останавливается', 'вызывает себя', 'игнорирует', 'удаляет'] },
+                        { question: 'API для?', answer: 'связи', options: ['вычислений', 'связи', 'графики', 'текста'] }
+                    ],
+                    video: '9bZkp7q19f0'
+                }
             }
         };
 
-        // Прогресс, избранное, серия (localStorage)
+        // Хранение данных
         let progress = JSON.parse(localStorage.getItem('tegyProgress')) || {};
         let favorites = JSON.parse(localStorage.getItem('tegyFavorites')) || {};
         let streak = parseInt(localStorage.getItem('tegyStreak')) || 0;
         let lastDaily = localStorage.getItem('tegyLastDaily') || new Date().toDateString();
 
-        // Функции (рефакторированы и расширены)
+        // Функции
         function generateFlashcards(subject, level) {
             const container = document.getElementById(`flashcards-${subject}-${level}`);
-            container.innerHTML = '';
-            subjects[subject][level].flashcards.forEach((card, index) => {
-                const div = document.createElement('div');
-                div.className = 'flashcard';
-                div.dataset.key = `${subject}-${level}-${index}`;
-                div.innerHTML = `
-                    <button class="favorite-btn" onclick="toggleFavorite('${subject}', '${level}', ${index})">❤️</button>
-                    <img src="${card.img}" alt="${card.word || card.term || card.event}">
-                    <p><strong>${card.word ? 'Word' : card.term ? 'Term' : 'Event'}:</strong> ${card.word || card.term || card.event}</p>
-                    <p><strong>${card.translation ? 'Translation' : 'Explanation'}:</strong> ${card.translation || card.explanation}</p>
-                    <p><strong>Example:</strong> ${card.example}</p>
-                    <p><strong>Fun Fact:</strong> ${card.fact}</p>
-                    <button class="speak-btn" onclick="speakText('${card.word || card.term || card.event}')"><i class="fas fa-volume-up"></i></button>
-                    <audio controls src="${card.audio || ''}">Произношение</audio>
-                `;
-                container.appendChild(div);
-                if (favorites[div.dataset.key]) div.querySelector('.favorite-btn').style.color = 'red';
-            });
-            container.innerHTML += `<iframe src="https://www.youtube.com/embed/${subjects[subject][level].video}" frameborder="0" allowfullscreen></iframe>`;
+            if (!container) return;
+            container.innerHTML = '<div class="loading">Загрузка карточек...</div>';
+            setTimeout(() => {
+                container.innerHTML = '';
+                subjects[subject][level].flashcards.forEach((card, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'flashcard';
+                    div.dataset.key = `${subject}-${level}-${index}`;
+                    const term = card.word || card.term || card.event;
+                    const expl = card.translation || card.explanation;
+                    div.innerHTML = `
+                        <button class="favorite-btn" onclick="toggleFavorite('${subject}', '${level}', ${index})" style="color: ${favorites[div.dataset.key] ? 'red' : 'black'}">❤️</button>
+                        <img src="${card.img}" alt="${term}" loading="lazy">
+                        <p><strong>${card.word ? 'Word' : card.term ? 'Term' : 'Event'}:</strong> ${term}</p>
+                        <p><strong>${card.translation ? 'Translation' : 'Explanation'}:</strong> ${expl}</p>
+                        <p><strong>Example:</strong> ${card.example}</p>
+                        <p><strong>Fun Fact:</strong> ${card.fact}</p>
+                        <button class="speak-btn" onclick="speakText('${term}')"><i class="fas fa-volume-up"></i></button>
+                    `;
+                    container.appendChild(div);
+                });
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${subjects[subject][level].video}`;
+                iframe.frameBorder = '0';
+                iframe.allowFullscreen = true;
+                iframe.loading = 'lazy';
+                container.appendChild(iframe);
+            }, 500);
         }
 
         function generateQuizzes(subject, level) {
             const container = document.getElementById(`quizzes-${subject}-${level}`);
-            container.innerHTML = '<h3>Квиз (множественный выбор)</h3>';
-            const shuffled = subjects[subject][level].quizzes.sort(() => 0.5 - Math.random()).slice(0, 7); // Больше вопросов
+            if (!container) return;
+            container.innerHTML = '<h3>Квиз</h3>';
+            const quizzes = subjects[subject][level].quizzes;
+            const shuffled = [...quizzes].sort(() => 0.5 - Math.random());
             shuffled.forEach((q, index) => {
-                const id = `${subject}-${level}-${index + 1}`;
-                let optionsHtml = '';
-                q.options.forEach(opt => {
-                    optionsHtml += `<div class="quiz-option" onclick="checkQuizOption('${id}', '${q.answer}', '${opt}', '${subject}', '${level}')">${opt}</div>`;
-                });
+                const id = `${subject}-${level}-q${index + 1}`;
+                let optionsHtml = q.options.map(opt => 
+                    `<div class="quiz-option" onclick="checkQuizOption('${id}', '${q.answer}', '${opt}', '${subject}', '${level}')">${opt}</div>`
+                ).join('');
                 container.innerHTML += `
                     <p>Вопрос ${index + 1}: ${q.question}</p>
                     <div class="quiz-options">${optionsHtml}</div>
@@ -584,7 +834,7 @@
         function showLevel(subject, level) {
             hideLevels(subject);
             const section = document.getElementById(`${subject}-${level}-level`);
-            section.style.display = 'block';
+            if (section) section.style.display = 'block';
             generateFlashcards(subject, level);
             generateQuizzes(subject, level);
             updateProgress(subject, level);
@@ -599,16 +849,18 @@
 
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-            document.getElementById(`${sectionId}-section`).style.display = 'block';
-            Telegram.WebApp.MainButton.show();
-            if (sectionId !== 'english' && sectionId !== 'math' && sectionId !== 'history') hideLevels(sectionId);
+            const targetSection = document.getElementById(`${sectionId}-section`);
+            if (targetSection) targetSection.style.display = 'block';
+            tg.MainButton.show();
+            if (sectionId !== 'profile' && sectionId !== 'about') hideLevels(sectionId);
             if (sectionId === 'profile') updateProfile();
+            if (subjects[sectionId]) updateFavorites(sectionId);
         }
 
         function showMainMenu() {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.getElementById('main-menu').style.display = 'block';
-            Telegram.WebApp.MainButton.hide();
+            tg.MainButton.hide();
             checkStreak();
         }
 
@@ -617,7 +869,8 @@
         }
 
         function repeatLevel(subject, level) {
-            progress[`${subject}-${level}`] = 0;
+            const key = `${subject}-${level}`;
+            progress[key] = 0;
             localStorage.setItem('tegyProgress', JSON.stringify(progress));
             showLevel(subject, level);
         }
@@ -625,53 +878,55 @@
         function updateProgress(subject, level) {
             const key = `${subject}-${level}`;
             if (!progress[key]) progress[key] = 0;
-            const fill = document.getElementById(`progress-${key}`);
+            const fill = document.getElementById(`progress-${key.replace('-', '-')}`);
+            if (!fill) return;
             const quizCount = subjects[subject][level].quizzes.length;
-            const percent = (progress[key] / quizCount * 100) || 0;
+            const percent = Math.min((progress[key] / quizCount) * 100, 100);
             fill.style.width = `${percent}%`;
             if (percent >= 100) {
-                document.getElementById(`award-${key}`).style.display = 'block';
-                document.getElementById(`next-${key}`).style.display = 'block';
-                Telegram.WebApp.sendData(JSON.stringify({ award: key, status: 'completed' }));
+                document.getElementById(`award-${key.replace('-', '-')}`).style.display = 'block';
+                document.getElementById(`next-${key.replace('-', '-')}`).style.display = 'block';
+                tg.showAlert('Уровень пройден! 🎉');
             }
+            localStorage.setItem('tegyProgress', JSON.stringify(progress));
         }
 
         function searchFlashcards(subject) {
             const searchTerm = document.getElementById(`search-${subject}`).value.toLowerCase();
             document.querySelectorAll(`#${subject}-section .flashcard`).forEach(card => {
-                const text = card.innerText.toLowerCase();
+                const text = card.textContent.toLowerCase();
                 card.style.display = text.includes(searchTerm) ? 'block' : 'none';
             });
         }
 
         function checkQuizOption(quizId, correctAnswer, selected, subject, level) {
             const result = document.getElementById(`result-${quizId}`);
-            if (selected.toLowerCase() === correctAnswer.toLowerCase()) {
+            if (!result) return;
+            const lowerSelected = selected.toLowerCase().trim();
+            const lowerCorrect = correctAnswer.toLowerCase().trim();
+            if (lowerSelected === lowerCorrect) {
                 result.innerText = 'Правильно! 🎉';
                 result.style.color = 'green';
-                Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
-                Telegram.WebApp.sendData(JSON.stringify({ quiz: subject, level, status: 'correct' }));
-                progress[`${subject}-${level}`]++;
-                localStorage.setItem('tegyProgress', JSON.stringify(progress));
+                tg.HapticFeedback.impactOccurred('heavy');
+                progress[`${subject}-${level}`] = (progress[`${subject}-${level}`] || 0) + 1;
                 updateProgress(subject, level);
                 createConfetti();
             } else {
-                result.innerText = 'Неправильно. Попробуй снова!';
+                result.innerText = `Неправильно. Правильный ответ: ${correctAnswer}`;
                 result.style.color = 'red';
-                Telegram.WebApp.HapticFeedback.notificationOccurred('error');
-                Telegram.WebApp.sendData(JSON.stringify({ quiz: subject, level, status: 'incorrect' }));
+                tg.HapticFeedback.notificationOccurred('error');
             }
         }
 
         function createConfetti() {
-            for (let i = 0; i < 50; i++) { // Больше конфетти
+            for (let i = 0; i < 50; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = `${Math.random() * 100}vw`;
                 confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
                 document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 2000);
+                setTimeout(() => confetti.remove(), 3000);
             }
         }
 
@@ -680,6 +935,8 @@
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
                 speechSynthesis.speak(utterance);
+            } else {
+                tg.showAlert('Произношение не поддерживается в этом браузере.');
             }
         }
 
@@ -688,13 +945,19 @@
             favorites[key] = !favorites[key];
             localStorage.setItem('tegyFavorites', JSON.stringify(favorites));
             updateFavorites(subject);
+            // Обновляем цвет кнопки
+            const btn = event.target;
+            btn.style.color = favorites[key] ? 'red' : 'black';
         }
 
         function updateFavorites(subject) {
             const container = document.getElementById(`favorites-${subject}`);
+            if (!container) return;
             container.innerHTML = '<h3>Избранные карточки</h3>';
+            let hasFavorites = false;
             Object.keys(favorites).forEach(key => {
                 if (favorites[key] && key.startsWith(subject)) {
+                    hasFavorites = true;
                     const [s, l, i] = key.split('-');
                     const card = subjects[s][l].flashcards[parseInt(i)];
                     const div = document.createElement('div');
@@ -702,76 +965,166 @@
                     div.innerHTML = `
                         <p><strong>${card.word || card.term || card.event}</strong>: ${card.translation || card.explanation}</p>
                         <p>Example: ${card.example}</p>
+                        <button class="remove-fav" onclick="toggleFavorite('${s}', '${l}', ${i})">Удалить</button>
                     `;
                     container.appendChild(div);
                 }
             });
+            if (!hasFavorites) container.innerHTML += '<p>Нет избранных карточек.</p>';
         }
-
         function showDailyChallenge(subject) {
             const today = new Date().toDateString();
             if (lastDaily !== today) {
                 streak++;
-                localStorage.setItem('tegyStreak', streak);
+                localStorage.setItem('tegyStreak', streak.toString());
                 lastDaily = today;
                 localStorage.setItem('tegyLastDaily', today);
             }
             const challengeDiv = document.getElementById(`daily-challenge-${subject}`);
-            challengeDiv.style.display = 'block';
-            // Генерация ежедневного вызова в зависимости от предмета
+            if (challengeDiv) challengeDiv.style.display = 'block';
+
+            // Генерация случайного вызова в зависимости от предмета (используем beginner для простоты)
+            let questionEl, inputEl, resultEl;
             if (subject === 'english') {
-                const randomWord = subjects.english.beginner.flashcards[Math.floor(Math.random() * subjects.english.beginner.flashcards.length)].word;
-                document.getElementById('daily-word').innerText = `Переведи "${randomWord}"`;
-                // Для checkDaily() функция проверяет ввод
+                questionEl = document.getElementById('daily-word');
+                const randomCard = subjects.english.beginner.flashcards[Math.floor(Math.random() * subjects.english.beginner.flashcards.length)];
+                questionEl.innerText = `Переведи "${randomCard.word}"`;
+                // Сохраняем правильный ответ в data-атрибуте для проверки
+                questionEl.dataset.correct = randomCard.translation.toLowerCase();
             } else if (subject === 'math') {
-                // Similar
-            } // etc.
+                questionEl = document.getElementById('daily-math-question');
+                const randomQuiz = subjects.math.beginner.quizzes[Math.floor(Math.random() * subjects.math.beginner.quizzes.length)];
+                questionEl.innerText = randomQuiz.question;
+                questionEl.dataset.correct = randomQuiz.answer.toLowerCase();
+            } else if (subject === 'history') {
+                questionEl = document.getElementById('daily-history-question');
+                const randomQuiz = subjects.history.beginner.quizzes[Math.floor(Math.random() * subjects.history.beginner.quizzes.length)];
+                questionEl.innerText = randomQuiz.question;
+                questionEl.dataset.correct = randomQuiz.answer.toLowerCase();
+            } else if (subject === 'programming') {
+                questionEl = document.getElementById('daily-programming-question');
+                const randomQuiz = subjects.programming.beginner.quizzes[Math.floor(Math.random() * subjects.programming.beginner.quizzes.length)];
+                questionEl.innerText = randomQuiz.question;
+                questionEl.dataset.correct = randomQuiz.answer.toLowerCase();
+            }
+            // Очищаем предыдущие результаты
+            if (questionEl) {
+                const inputId = `daily-${subject}-input` || `daily-input`;
+                inputEl = document.getElementById(inputId);
+                resultEl = document.getElementById(`daily-${subject}-result`) || document.getElementById('daily-result');
+                if (inputEl) inputEl.value = '';
+                if (resultEl) resultEl.innerText = '';
+            }
         }
 
-        // Функции для ежедневных вызовов (checkDaily, checkDailyMath, etc.)
-        function checkDaily() {
-            // Логика проверки для english
-            // ...
-            createConfetti();
-        }
+        function checkDaily(subject) {
+            let questionEl, inputEl, resultEl;
+            if (subject === 'english') {
+                questionEl = document.getElementById('daily-word');
+                inputEl = document.getElementById('daily-input');
+                resultEl = document.getElementById('daily-result');
+            } else if (subject === 'math') {
+                questionEl = document.getElementById('daily-math-question');
+                inputEl = document.getElementById('daily-math-input');
+                resultEl = document.getElementById('daily-math-result');
+            } else if (subject === 'history') {
+                questionEl = document.getElementById('daily-history-question');
+                inputEl = document.getElementById('daily-history-input');
+                resultEl = document.getElementById('daily-history-result');
+            } else if (subject === 'programming') {
+                questionEl = document.getElementById('daily-programming-question');
+                inputEl = document.getElementById('daily-programming-input');
+                resultEl = document.getElementById('daily-programming-result');
+            }
+            if (!questionEl || !inputEl || !resultEl) return;
 
-        // Аналогично для других
+            const userAnswer = inputEl.value.toLowerCase().trim();
+            const correctAnswer = questionEl.dataset.correct || '';
+            if (userAnswer === correctAnswer) {
+                resultEl.innerText = 'Правильно! 🎉 Стreak обновлён.';
+                resultEl.style.color = 'green';
+                tg.HapticFeedback.impactOccurred('heavy');
+                createConfetti();
+                // Обновляем стрик (уже сделано в showDailyChallenge, но можно добавить бонус прогресса)
+                progress[`${subject}-beginner`] = (progress[`${subject}-beginner`] || 0) + 1;
+                localStorage.setItem('tegyProgress', JSON.stringify(progress));
+            } else {
+                resultEl.innerText = `Неправильно. Правильный ответ: ${questionEl.dataset.correct}`;
+                resultEl.style.color = 'red';
+                tg.HapticFeedback.notificationOccurred('error');
+                // Не сбрасываем стрик, но не увеличиваем
+            }
+            inputEl.value = '';  // Очистка ввода
+        }
 
         function checkStreak() {
             const today = new Date().toDateString();
-            if (lastDaily !== today) streak = 0;
-            localStorage.setItem('tegyStreak', streak);
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (lastDaily !== today && lastDaily !== yesterday.toDateString()) {
+                streak = 0;
+                localStorage.setItem('tegyStreak', '0');
+            }
+            document.getElementById('streak-counter').innerText = streak;  // Обновляем в профиле при необходимости
         }
 
         function updateProfile() {
             const progressList = document.getElementById('profile-progress');
+            if (!progressList) return;
             progressList.innerHTML = '';
-            Object.keys(progress).forEach(key => {
-                const li = document.createElement('li');
-                li.innerText = `${key}: ${progress[key]} из ${subjects[key.split('-')[0]][key.split('-')[1]].quizzes.length}`;
-                progressList.appendChild(li);
+            Object.keys(subjects).forEach(subject => {
+                const levels = ['beginner', 'intermediate', 'advanced'];
+                levels.forEach(level => {
+                    const key = `${subject}-${level}`;
+                    const li = document.createElement('li');
+                    const quizCount = subjects[subject][level].quizzes.length;
+                    const p = progress[key] || 0;
+                    li.innerText = `${subject} ${level}: ${p} / ${quizCount} (${Math.round((p / quizCount) * 100)}%)`;
+                    progressList.appendChild(li);
+                });
             });
+
             const badges = document.getElementById('profile-badges');
-            badges.innerHTML = '';
-            // Добавление значков на основе прогресса
-            if (Object.values(progress).some(p => p >= 5)) badges.innerHTML += '<span class="badge">🥉</span>';
-            // etc.
+            if (badges) {
+                badges.innerHTML = '';
+                // Значки на основе прогресса
+                let totalProgress = Object.values(progress).reduce((a, b) => a + b, 0);
+                if (totalProgress >= 10) badges.innerHTML += '<span class="badge">🥉</span>';  // Бронза
+                if (totalProgress >= 25) badges.innerHTML += '<span class="badge">🥈</span>';  // Серебро
+                if (totalProgress >= 50) badges.innerHTML += '<span class="badge">🥇</span>';  // Золото
+                if (streak >= 7) badges.innerHTML += '<span class="badge">🔥</span>';  // Огонь за стрик
+            }
+
             document.getElementById('streak-counter').innerText = streak;
         }
 
         function shareProgress() {
-            const text = `Мой прогресс в Tegy S: серия ${streak} дней!`;
-            Telegram.WebApp.shareToWall(text);
+            const totalProgress = Object.values(progress).reduce((a, b) => a + b, 0);
+            const text = `Мой прогресс в Tegy S: ${totalProgress} заданий пройдено! Серия: ${streak} дней. Присоединяйся! 🚀`;
+            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(tg.initDataUnsafe.start_param || '')}&text=${encodeURIComponent(text)}`);
         }
 
-        // Инициализация
+        // Инициализация приложения
         function init() {
-            if (localStorage.getItem('tegyTheme') === 'dark') document.body.classList.add('dark');
+            // Восстанавливаем тему
+            if (localStorage.getItem('tegyTheme') === 'dark') {
+                document.body.classList.add('dark');
+            }
+            // Показываем главное меню
             showMainMenu();
-            Object.keys(subjects).forEach(sub => updateFavorites(sub));
+            // Обновляем избранное для всех предметов
+            Object.keys(subjects).forEach(subject => updateFavorites(subject));
+            // Проверяем стрик
+            checkStreak();
         }
 
+        // События
         window.addEventListener('load', init);
+
+        // Обработка ошибок (опционально)
+        window.onerror = function(msg, url, line) {
+            tg.showAlert(`Ошибка: ${msg} (строка ${line})`);
+        };
     </script>
 </body>
 </html>
