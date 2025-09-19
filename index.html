@@ -5,35 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tegy S - Образовательный Бот</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            --dark-gradient: linear-gradient(135deg, #1e1e1e 0%, #333 100%);
-            --card-bg-light: rgba(255, 255, 255, 0.1);
-            --card-bg-dark: rgba(0, 0, 0, 0.3);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg-light: rgba(255, 255, 255, 0.85);
+            --card-bg-dark: rgba(30, 30, 46, 0.85);
             --button-gradient: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
-            --pulse-color: rgba(255, 255, 255, 0.2);
-            --shadow-light: 0 4px 15px rgba(0,0,0,0.2);
-            --shadow-dark: 0 4px 15px rgba(0,0,0,0.4);
-            --text-light: #fff;
-            --text-dark: #ddd;
-            --card-text-light: #333;
-            --card-text-dark: #fff;
-            --input-bg-light: #fff;
-            --input-bg-dark: #555;
-            --input-text-light: #333;
-            --input-text-dark: #ddd;
-            --quiz-option-light: #eee;
-            --quiz-option-dark: #555;
-            --quiz-hover-light: #ddd;
-            --quiz-hover-dark: #666;
-            --progress-bg-light: #ddd;
-            --progress-bg-dark: #666;
-            --progress-fill: #4caf50;
-            --favorite-btn-color: #ff6b6b;
-            --remove-btn-bg: #f44336;
+            --pulse-color: rgba(255, 255, 255, 0.4);
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --text-light: #1a1a2e;
+            --text-dark: #e2e8f0;
+            --card-text-light: #334155;
+            --card-text-dark: #cbd5e1;
+            --input-bg-light: #f1f5f9;
+            --input-bg-dark: #475569;
+            --input-text-light: #1e293b;
+            --input-text-dark: #f8fafc;
+            --quiz-option-light: #e2e8f0;
+            --quiz-option-dark: #334155;
+            --quiz-hover-light: #cbd5e1;
+            --quiz-hover-dark: #475569;
+            --progress-bg-light: #cbd5e1;
+            --progress-bg-dark: #64748b;
+            --progress-fill: #4ade80;
+            --favorite-btn-color: #ef4444;
+            --remove-btn-bg: #f87171;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
         }
 
         body {
@@ -47,9 +51,9 @@
             align-items: center;
             justify-content: flex-start;
             min-height: 100vh;
-            overflow-y: auto;
-            animation: fadeIn 1s ease-in-out;
-            transition: background 0.5s, color 0.5s;
+            overflow-x: hidden;
+            animation: fadeIn 0.5s ease-out;
+            transition: background 0.5s ease, color 0.5s ease;
             position: relative;
         }
 
@@ -65,216 +69,310 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.1;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.03;
             pointer-events: none;
+            z-index: -1;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; } 
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         header {
             width: 100%;
             text-align: center;
-            padding: 10px 0;
-            background: rgba(0,0,0,0.2);
+            padding: 15px 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 100;
             box-shadow: var(--shadow-light);
-            transition: box-shadow 0.3s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         body.dark header {
+            background: rgba(0, 0, 0, 0.25);
             box-shadow: var(--shadow-dark);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         h1 {
-            font-size: 2.2em;
-            margin: 10px 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            animation: slideIn 0.5s ease-out;
+            font-size: 1.8rem;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: slideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; } 
+            from { transform: translateY(-20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+        }
+
+        .user-greeting {
+            font-size: 1.1rem;
+            margin-top: 5px;
+            font-weight: 500;
+            opacity: 0.9;
         }
 
         .section {
             background: var(--card-bg-light);
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 25px;
             margin: 20px;
-            width: 90%;
+            width: calc(100% - 40px);
             max-width: 600px;
             box-shadow: var(--shadow-light);
-            backdrop-filter: blur(10px);
-            animation: cardAppear 0.8s ease-in-out;
-            transition: background 0.5s, box-shadow 0.3s;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: cardAppear 0.4s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         body.dark .section {
             background: var(--card-bg-dark);
             box-shadow: var(--shadow-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark .section:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
         @keyframes cardAppear {
-            from { transform: scale(0.9); opacity: 0; } 
+            from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
         .button {
             background: var(--button-gradient);
             border: none;
-            border-radius: 10px;
-            color: #fff;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            margin: 10px;
+            border-radius: 12px;
+            color: white;
+            padding: 16px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 12px 5px;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            animation: pulse 2s infinite;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            width: calc(100% - 20px);
+            width: calc(100% - 10px);
             max-width: 300px;
-        }
-
-        .button i {
-            margin-right: 10px;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 var(--pulse-color); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-        }
-
-        .button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-
-        body.dark .button:hover {
-            box-shadow: 0 6px 15px rgba(0,0,0,0.5);
-        }
-
-        .flashcard {
-            background: var(--input-bg-light);
-            color: var(--card-text-light);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
             overflow: hidden;
         }
 
+        .button i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .button:hover::before {
+            left: 100%;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        body.dark .button:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .flashcard {
+            background: white;
+            color: var(--card-text-light);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
         .flashcard:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
         }
 
         body.dark .flashcard {
-            background: var(--input-bg-dark);
+            background: #1e293b;
             color: var(--card-text-dark);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         body.dark .flashcard:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
 
         .flashcard img {
             max-width: 100%;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            height: 150px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            height: 160px;
             object-fit: cover;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .flashcard img:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .flashcard .speak-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #4caf50;
+            top: 15px;
+            right: 15px;
+            background: var(--info-color);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
         .flashcard .speak-btn:hover {
-            background: #45a049;
+            background: #2563eb;
             transform: scale(1.1);
         }
 
         .quiz-container {
-            margin: 20px 0;
+            margin: 25px 0;
+            padding: 5px;
+        }
+
+        .quiz-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+
+        body.dark .quiz-question {
+            color: var(--text-dark);
         }
 
         .quiz-options {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
         }
 
         .quiz-option {
             background: var(--quiz-option-light);
             color: var(--input-text-light);
-            padding: 12px 15px;
-            margin: 8px 0;
-            border-radius: 8px;
+            padding: 14px 18px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             font-weight: 500;
+            text-align: center;
+            border: 2px solid transparent;
         }
 
         body.dark .quiz-option {
             background: var(--quiz-option-dark);
             color: var(--input-text-dark);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
         .quiz-option:hover {
             background: var(--quiz-hover-light);
-            transform: translateX(5px);
+            transform: translateY(-2px);
         }
 
         body.dark .quiz-option:hover {
             background: var(--quiz-hover-dark);
         }
 
+        .quiz-option.selected {
+            border-color: var(--info-color);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        body.dark .quiz-option.selected {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-color);
+            background: rgba(34, 197, 94, 0.15);
+        }
+
+        body.dark .quiz-option.correct {
+            background: rgba(34, 197, 94, 0.25);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-color);
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        body.dark .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .quiz-input-container {
+            display: flex;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
         .quiz-input {
-            margin: 15px 0;
-            padding: 12px 15px;
-            border-radius: 8px;
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 12px;
             border: 2px solid transparent;
-            width: calc(100% - 30px);
             background: var(--input-bg-light);
             color: var(--input-text-light);
-            font-size: 1em;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         body.dark .quiz-input {
@@ -284,48 +382,50 @@
 
         .quiz-input:focus {
             outline: none;
-            border-color: #4caf50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            border-color: var(--info-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
 
         body.dark .quiz-input:focus {
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
         }
 
         .result {
-            font-size: 1.1em;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 8px;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            padding: 12px 18px;
+            border-radius: 12px;
             font-weight: 600;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
         }
 
         .result.correct {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4caf50;
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success-color);
         }
 
         .result.incorrect {
-            background: rgba(244, 67, 54, 0.2);
-            color: #f44336;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error-color);
         }
 
         .about-text {
-            font-size: 1em;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.7;
             text-align: justify;
         }
 
         .level-section {
             display: none;
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.4s ease;
         }
 
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            animation: confetti-fall 1s linear;
+            width: 12px;
+            height: 12px;
+            animation: confetti-fall 5s linear forwards;
             z-index: 1000;
         }
 
@@ -335,20 +435,22 @@
         }
 
         .progress-container {
-            margin: 15px 0;
+            margin: 20px 0;
         }
 
         .progress-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.9em;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .progress-bar {
             background: var(--progress-bg-light);
             height: 12px;
-            border-radius: 6px;
+            border-radius: 10px;
             overflow: hidden;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -361,41 +463,40 @@
         .progress-fill {
             background: var(--progress-fill);
             height: 100%;
-            border-radius: 6px;
-            transition: width 0.5s ease-in-out;
+            border-radius: 10px;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .award {
-            font-size: 2.5em;
-            animation: bounce 1s ease-in-out;
+            font-size: 3rem;
+            animation: bounce 1s ease infinite;
             display: block;
             text-align: center;
-            margin: 20px 0;
+            margin: 25px 0;
             color: gold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px); }
-            60% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
         .search-container {
             position: relative;
-            margin: 15px 0;
+            margin: 20px 0;
         }
 
         .search-input {
-            padding: 12px 15px 12px 40px;
+            padding: 14px 20px 14px 45px;
             width: 100%;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 2px solid transparent;
             background: var(--input-bg-light);
             color: var(--input-text-light);
-            font-size: 1em;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         body.dark .search-input {
@@ -405,12 +506,12 @@
 
         .search-input:focus {
             outline: none;
-            border-color: #4caf50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            border-color: var(--info-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
 
         body.dark .search-input:focus {
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
         }
 
         .search-icon {
@@ -418,24 +519,24 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #777;
+            color: #94a3b8;
         }
 
         body.dark .search-icon {
-            color: #aaa;
+            color: #cbd5e1;
         }
 
         iframe {
             width: 100%;
-            height: 200px;
-            border-radius: 10px;
-            margin: 15px 0;
+            height: 220px;
+            border-radius: 16px;
+            margin: 20px 0;
             border: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
         }
 
         body.dark iframe {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
 
         .profile-section {
@@ -443,8 +544,8 @@
         }
 
         .badge {
-            font-size: 2.5em;
-            margin: 8px;
+            font-size: 2.5rem;
+            margin: 10px;
             display: inline-block;
             animation: badgePulse 2s infinite;
         }
@@ -456,41 +557,47 @@
         }
 
         .streak {
-            font-size: 1.8em;
+            font-size: 2rem;
             color: gold;
             font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .daily-challenge {
-            background: rgba(255, 215, 0, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
             border: 1px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         body.dark .daily-challenge {
-            background: rgba(255, 215, 0, 0.1);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.03));
             border: 1px solid rgba(255, 215, 0, 0.2);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .favorite-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 15px;
+            left: 15px;
             background: transparent;
             border: none;
-            font-size: 1.8em;
+            font-size: 1.8rem;
             cursor: pointer;
-            transition: transform 0.2s, color 0.3s;
-            color: #ccc;
+            transition: all 0.2s ease;
+            color: #cbd5e1;
             z-index: 2;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .favorite-btn:hover {
-            transform: scale(1.2);
+            transform: scale(1.1);
         }
 
         .favorite-btn.favorited {
@@ -498,238 +605,262 @@
         }
 
         .favorites-list {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(0,0,0,0.1);
         }
 
         body.dark .favorites-list {
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         .remove-fav {
             background: var(--remove-btn-bg);
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 8px 12px;
-            margin-top: 10px;
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin-top: 12px;
             cursor: pointer;
-            transition: background 0.3s;
-            font-size: 0.9em;
+            transition: background 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .remove-fav:hover {
-            background: #d32f2f;
+            background: #ef4444;
         }
 
         footer {
             width: 100%;
             text-align: center;
-            padding: 15px 0;
-            background: rgba(0,0,0,0.2);
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             margin-top: auto;
-            font-size: 0.85em;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark footer {
+            background: rgba(0, 0, 0, 0.25);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .loading {
             text-align: center;
             color: var(--text-light);
-            padding: 20px;
-            font-size: 1.2em;
+            padding: 30px;
+            font-size: 1.2rem;
         }
 
         body.dark .loading {
             color: var(--text-dark);
         }
 
-        .back-button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background 0.3s;
-            z-index: 11;
-        }
-
-        body.dark .back-button {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-dark);
-        }
-
-        .back-button:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        body.dark .back-button:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
         .theme-toggle {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.2em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background 0.3s;
-            z-index: 11;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 101;
         }
 
         body.dark .theme-toggle {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: var(--text-dark);
         }
 
         .theme-toggle:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
         }
 
         body.dark .theme-toggle:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .level-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .level-button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            padding: 12px 20px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            min-width: 120px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        body.dark .level-button {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-dark);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .level-button:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-
-        body.dark .level-button:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .level-button i {
-            margin-right: 8px;
-        }
-
-        .user-greeting {
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
 
+        .level-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 16px 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark .level-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .level-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        body.dark .level-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .level-button i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
         .stat-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px 15px;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
         }
 
         body.dark .stat-card {
-            background: rgba(255,255,255,0.05);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
 
         .stat-value {
-            font-size: 1.8em;
+            font-size: 2rem;
             font-weight: 700;
-            color: #4caf50;
+            color: white;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .stat-label {
-            font-size: 0.9em;
-            opacity: 0.8;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: white;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--info-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+        }
+
+        body.dark .back-to-top:hover {
+            background: #3b82f6;
         }
 
         @media (max-width: 600px) {
             h1 {
-                font-size: 1.8em;
-            }
-            
-            .button {
-                padding: 12px 20px;
-                font-size: 1em;
+                font-size: 1.6rem;
             }
             
             .section {
-                padding: 15px;
+                padding: 20px;
                 margin: 15px;
+                width: calc(100% - 30px);
+            }
+            
+            .button {
+                padding: 14px 20px;
+                font-size: 0.95rem;
             }
             
             .flashcard {
-                padding: 12px;
+                padding: 16px;
             }
             
             .quiz-option {
-                padding: 10px;
+                padding: 12px 15px;
+            }
+            
+            .search-input, .quiz-input {
+                padding: 12px 16px 12px 40px;
             }
         }
     </style>
 </head>
 <body>
-    <button class="back-button" onclick="showMainMenu()" style="display: none;">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    
     <button class="theme-toggle" onclick="toggleTheme()">
         <i class="fas fa-moon"></i>
     </button>
 
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <header>
         <h1>Tegy S: Обучение по направлениям</h1>
+        <div class="user-greeting" id="user-greeting">Добро пожаловать!</div>
     </header>
     
     <div id="main-menu" class="section">
-        <div class="user-greeting" id="user-greeting"></div>
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value" id="total-progress">0</div>
@@ -763,8 +894,10 @@
         <div id="daily-challenge-english" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-word"></p>
-            <input type="text" id="daily-input" class="quiz-input" placeholder="Перевод">
-            <button class="button" onclick="checkDaily('english')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
+            <div class="quiz-input-container">
+                <input type="text" id="daily-input" class="quiz-input" placeholder="Перевод">
+                <button class="button" onclick="checkDaily('english')" style="width: auto; padding: 14px 20px;"><i class="fas fa-check"></i></button>
+            </div>
             <p id="daily-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
@@ -785,9 +918,9 @@
             <div id="flashcards-english-beginner"></div>
             <div id="quizzes-english-beginner" class="quiz-container"></div>
             <div id="award-english-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('english', 'beginner')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-english-beginner" onclick="showLevel('english', 'intermediate')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('english')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('english', 'beginner')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-english-beginner" onclick="showLevel('english', 'intermediate')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('english')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="english-intermediate-level" class="level-section">
             <h3>Intermediate: Фразы и грамматика</h3>
@@ -801,9 +934,9 @@
             <div id="flashcards-english-intermediate"></div>
             <div id="quizzes-english-intermediate" class="quiz-container"></div>
             <div id="award-english-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('english', 'intermediate')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-english-intermediate" onclick="showLevel('english', 'advanced')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('english')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('english', 'intermediate')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-english-intermediate" onclick="showLevel('english', 'advanced')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('english')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="english-advanced-level" class="level-section">
             <h3>Advanced: Идиомы и сложные конструкции</h3>
@@ -817,9 +950,9 @@
             <div id="flashcards-english-advanced"></div>
             <div id="quizzes-english-advanced" class="quiz-container"></div>
             <div id="award-english-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('english', 'advanced')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-english-advanced" onclick="showMainMenu()">Завершить</button>
-            <button class="button" onclick="hideLevels('english')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('english', 'advanced')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-english-advanced" onclick="showMainMenu()"><i class="fas fa-flag-checkered"></i> Завершить</button>
+            <button class="button" onclick="hideLevels('english')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div class="favorites-list" id="favorites-english">
             <h3>Избранные карточки</h3>
@@ -836,8 +969,10 @@
         <div id="daily-challenge-math" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-math-question"></p>
-            <input type="text" id="daily-math-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDaily('math')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
+            <div class="quiz-input-container">
+                <input type="text" id="daily-math-input" class="quiz-input" placeholder="Ответ">
+                <button class="button" onclick="checkDaily('math')" style="width: auto; padding: 14px 20px;"><i class="fas fa-check"></i></button>
+            </div>
             <p id="daily-math-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
@@ -858,9 +993,9 @@
             <div id="flashcards-math-beginner"></div>
             <div id="quizzes-math-beginner" class="quiz-container"></div>
             <div id="award-math-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('math', 'beginner')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-math-beginner" onclick="showLevel('math', 'intermediate')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('math')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('math', 'beginner')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-math-beginner" onclick="showLevel('math', 'intermediate')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('math')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="math-intermediate-level" class="level-section">
             <h3>Intermediate: Геометрия и алгебра</h3>
@@ -874,9 +1009,9 @@
             <div id="flashcards-math-intermediate"></div>
             <div id="quizzes-math-intermediate" class="quiz-container"></div>
             <div id="award-math-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('math', 'intermediate')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-math-intermediate" onclick="showLevel('math', 'advanced')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('math')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('math', 'intermediate')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-math-intermediate" onclick="showLevel('math', 'advanced')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('math')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="math-advanced-level" class="level-section">
             <h3>Advanced: Калькулюс и статистика</h3>
@@ -890,9 +1025,9 @@
             <div id="flashcards-math-advanced"></div>
             <div id="quizzes-math-advanced" class="quiz-container"></div>
             <div id="award-math-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('math', 'advanced')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-math-advanced" onclick="showMainMenu()">Завершить</button>
-            <button class="button" onclick="hideLevels('math')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('math', 'advanced')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-math-advanced" onclick="showMainMenu()"><i class="fas fa-flag-checkered"></i> Завершить</button>
+            <button class="button" onclick="hideLevels('math')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div class="favorites-list" id="favorites-math">
             <h3>Избранные карточки</h3>
@@ -909,8 +1044,10 @@
         <div id="daily-challenge-history" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-history-question"></p>
-            <input type="text" id="daily-history-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDaily('history')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
+            <div class="quiz-input-container">
+                <input type="text" id="daily-history-input" class="quiz-input" placeholder="Ответ">
+                <button class="button" onclick="checkDaily('history')" style="width: auto; padding: 14px 20px;"><i class="fas fa-check"></i></button>
+            </div>
             <p id="daily-history-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
@@ -931,9 +1068,9 @@
             <div id="flashcards-history-beginner"></div>
             <div id="quizzes-history-beginner" class="quiz-container"></div>
             <div id="award-history-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('history', 'beginner')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-history-beginner" onclick="showLevel('history', 'intermediate')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('history')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('history', 'beginner')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-history-beginner" onclick="showLevel('history', 'intermediate')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('history')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="history-intermediate-level" class="level-section">
             <h3>Intermediate: Средневековье</h3>
@@ -947,9 +1084,9 @@
             <div id="flashcards-history-intermediate"></div>
             <div id="quizzes-history-intermediate" class="quiz-container"></div>
             <div id="award-history-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('history', 'intermediate')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-history-intermediate" onclick="showLevel('history', 'advanced')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('history')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('history', 'intermediate')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-history-intermediate" onclick="showLevel('history', 'advanced')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('history')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="history-advanced-level" class="level-section">
             <h3>Advanced: Современная история</h3>
@@ -963,9 +1100,9 @@
             <div id="flashcards-history-advanced"></div>
             <div id="quizzes-history-advanced" class="quiz-container"></div>
             <div id="award-history-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('history', 'advanced')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-history-advanced" onclick="showMainMenu()">Завершить</button>
-            <button class="button" onclick="hideLevels('history')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('history', 'advanced')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-history-advanced" onclick="showMainMenu()"><i class="fas fa-flag-checkered"></i> Завершить</button>
+            <button class="button" onclick="hideLevels('history')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div class="favorites-list" id="favorites-history">
             <h3>Избранные карточки</h3>
@@ -982,8 +1119,10 @@
         <div id="daily-challenge-programming" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-programming-question"></p>
-            <input type="text" id="daily-programming-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDaily('programming')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
+            <div class="quiz-input-container">
+                <input type="text" id="daily-programming-input" class="quiz-input" placeholder="Ответ">
+                <button class="button" onclick="checkDaily('programming')" style="width: auto; padding: 14px 20px;"><i class="fas fa-check"></i></button>
+            </div>
             <p id="daily-programming-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
@@ -1004,9 +1143,9 @@
             <div id="flashcards-programming-beginner"></div>
             <div id="quizzes-programming-beginner" class="quiz-container"></div>
             <div id="award-programming-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('programming', 'beginner')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-programming-beginner" onclick="showLevel('programming', 'intermediate')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('programming', 'beginner')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-programming-beginner" onclick="showLevel('programming', 'intermediate')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('programming')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="programming-intermediate-level" class="level-section">
             <h3>Intermediate: Циклы и условия</h3>
@@ -1020,9 +1159,9 @@
             <div id="flashcards-programming-intermediate"></div>
             <div id="quizzes-programming-intermediate" class="quiz-container"></div>
             <div id="award-programming-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('programming', 'intermediate')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-programming-intermediate" onclick="showLevel('programming', 'advanced')">Следующий уровень</button>
-            <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('programming', 'intermediate')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-programming-intermediate" onclick="showLevel('programming', 'advanced')"><i class="fas fa-arrow-right"></i> Следующий уровень</button>
+            <button class="button" onclick="hideLevels('programming')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div id="programming-advanced-level" class="level-section">
             <h3>Advanced: OOP и алгоритмы</h3>
@@ -1036,9 +1175,9 @@
             <div id="flashcards-programming-advanced"></div>
             <div id="quizzes-programming-advanced" class="quiz-container"></div>
             <div id="award-programming-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
-            <button class="button" onclick="repeatLevel('programming', 'advanced')">Повторить уровень</button>
-            <button class="button" style="display: none;" id="next-programming-advanced" onclick="showMainMenu()">Завершить</button>
-            <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
+            <button class="button" onclick="repeatLevel('programming', 'advanced')"><i class="fas fa-redo"></i> Повторить уровень</button>
+            <button class="button" style="display: none;" id="next-programming-advanced" onclick="showMainMenu()"><i class="fas fa-flag-checkered"></i> Завершить</button>
+            <button class="button" onclick="hideLevels('programming')"><i class="fas fa-arrow-left"></i> Вернуться к уровням</button>
         </div>
         <div class="favorites-list" id="favorites-programming">
             <h3>Избранные карточки</h3>
@@ -1062,13 +1201,13 @@
         <p>Значки:</p>
         <div id="profile-badges"></div>
         <button class="button" onclick="shareProgress()"><i class="fas fa-share"></i> Поделиться прогрессом</button>
-        <button class="button" onclick="showMainMenu()">Назад</button>
+        <button class="button" onclick="showMainMenu()"><i class="fas fa-arrow-left"></i> Назад</button>
     </div>
 
     <div id="about-section" class="section" style="display: none;">
         <h2>О нас</h2>
         <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
-        <button class="button" onclick="showMainMenu()">Назад</button>
+        <button class="button" onclick="showMainMenu()"><i class="fas fa-arrow-left"></i> Назад</button>
     </div>
 
     <footer>
@@ -1080,7 +1219,7 @@
         const tg = window.Telegram.WebApp;
         const initData = tg.initDataUnsafe;
         if (!initData || !initData.user) {
-            document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
+            document.body.innerHTML = '<p style="color: white; text-align: center; margin-top: 50px;">Доступ только через Telegram!</p>';
         } else {
             tg.ready();
             tg.expand();
@@ -1351,10 +1490,10 @@
             shuffled.forEach((q, index) => {
                 const id = `${subject}-${level}-q${index + 1}`;
                 let optionsHtml = q.options.map(opt => 
-                    `<div class="quiz-option" onclick="checkQuizOption('${id}', '${q.answer}', '${opt}', '${subject}', '${level}')">${opt}</div>`
+                    `<div class="quiz-option" onclick="checkQuizOption('${id}', '${q.answer}', '${opt}', '${subject}', '${level}', this)">${opt}</div>`
                 ).join('');
                 container.innerHTML += `
-                    <p>Вопрос ${index + 1}: ${q.question}</p>
+                    <p class="quiz-question">Вопрос ${index + 1}: ${q.question}</p>
                     <div class="quiz-options">${optionsHtml}</div>
                     <p id="result-${id}" class="result"></p>
                 `;
@@ -1369,7 +1508,6 @@
             generateQuizzes(subject, level);
             updateProgress(subject, level);
             showDailyChallenge(subject);
-            document.querySelector('.back-button').style.display = 'flex';
             window.scrollTo(0, 0);
         }
 
@@ -1387,14 +1525,12 @@
             if (sectionId !== 'profile' && sectionId !== 'about') hideLevels(sectionId);
             if (sectionId === 'profile') updateProfile();
             if (subjects[sectionId]) updateFavorites(sectionId);
-            document.querySelector('.back-button').style.display = 'flex';
             window.scrollTo(0, 0);
         }
 
         function showMainMenu() {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.getElementById('main-menu').style.display = 'block';
-            document.querySelector('.back-button').style.display = 'none';
             checkStreak();
             updateMainMenuStats();
         }
@@ -1441,12 +1577,24 @@
             });
         }
 
-        function checkQuizOption(quizId, correctAnswer, selected, subject, level) {
+        function checkQuizOption(quizId, correctAnswer, selected, subject, level, element) {
             const result = document.getElementById(`result-${quizId}`);
             if (!result) return;
+            
+            // Убираем выделение с других опций
+            const allOptions = element.parentElement.querySelectorAll('.quiz-option');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Выделяем выбранную опцию
+            element.classList.add('selected');
+            
             const lowerSelected = selected.toLowerCase().trim();
             const lowerCorrect = correctAnswer.toLowerCase().trim();
+            
             if (lowerSelected === lowerCorrect) {
+                element.classList.add('correct');
                 result.innerText = 'Правильно! 🎉';
                 result.className = 'result correct';
                 tg.HapticFeedback.impactOccurred('heavy');
@@ -1454,6 +1602,13 @@
                 updateProgress(subject, level);
                 createConfetti();
             } else {
+                element.classList.add('incorrect');
+                // Подсвечиваем правильный ответ
+                allOptions.forEach(opt => {
+                    if (opt.textContent.toLowerCase().trim() === lowerCorrect) {
+                        opt.classList.add('correct');
+                    }
+                });
                 result.innerText = `Неправильно. Правильный ответ: ${correctAnswer}`;
                 result.className = 'result incorrect';
                 tg.HapticFeedback.notificationOccurred('error');
@@ -1662,6 +1817,20 @@
             }
         }
 
+        // Функции для кнопки "Наверх"
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onscroll = function() {
+            const backToTopButton = document.getElementById('backToTop');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        };
+
         // Инициализация приложения
         function init() {
             // Восстанавливаем тему
@@ -1689,7 +1858,6 @@
         // Обработка ошибок
         window.onerror = function(msg, url, line) {
             console.error('Error: ', msg, ' at ', url, ':', line);
-            // tg.showAlert(`Ошибка: ${msg} (строка ${line})`);
         };
     </script>
 </body>
