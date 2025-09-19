@@ -8,12 +8,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --dark-gradient: linear-gradient(135deg, #1e1e1e 0%, #333 100%);
+            --card-bg-light: rgba(255, 255, 255, 0.1);
+            --card-bg-dark: rgba(0, 0, 0, 0.3);
+            --button-gradient: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            --pulse-color: rgba(255, 255, 255, 0.2);
+            --shadow-light: 0 4px 15px rgba(0,0,0,0.2);
+            --shadow-dark: 0 4px 15px rgba(0,0,0,0.4);
+            --text-light: #fff;
+            --text-dark: #ddd;
+            --card-text-light: #333;
+            --card-text-dark: #fff;
+            --input-bg-light: #fff;
+            --input-bg-dark: #555;
+            --input-text-light: #333;
+            --input-text-dark: #ddd;
+            --quiz-option-light: #eee;
+            --quiz-option-dark: #555;
+            --quiz-hover-light: #ddd;
+            --quiz-hover-dark: #666;
+            --progress-bg-light: #ddd;
+            --progress-bg-dark: #666;
+            --progress-fill: #4caf50;
+            --favorite-btn-color: #ff6b6b;
+            --remove-btn-bg: #f44336;
+        }
+
         body {
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #fff;
+            background: var(--primary-gradient);
+            color: var(--text-light);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -21,13 +49,15 @@
             min-height: 100vh;
             overflow-y: auto;
             animation: fadeIn 1s ease-in-out;
-            transition: background 0.5s;
+            transition: background 0.5s, color 0.5s;
             position: relative;
         }
+
         body.dark {
-            background: linear-gradient(135deg, #1e1e1e 0%, #333 100%);
-            color: #ddd;
+            background: var(--dark-gradient);
+            color: var(--text-dark);
         }
+
         body::before {
             content: '';
             position: absolute;
@@ -39,9 +69,12 @@
             opacity: 0.1;
             pointer-events: none;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; } to { opacity: 1; }
+            from { opacity: 0; } 
+            to { opacity: 1; }
         }
+
         header {
             width: 100%;
             text-align: center;
@@ -50,83 +83,129 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            box-shadow: var(--shadow-light);
+            transition: box-shadow 0.3s;
         }
+
+        body.dark header {
+            box-shadow: var(--shadow-dark);
+        }
+
         h1 {
-            font-size: 2.5em;
+            font-size: 2.2em;
             margin: 10px 0;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             animation: slideIn 0.5s ease-out;
         }
+
         @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(-20px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; }
         }
+
         .section {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg-light);
             border-radius: 15px;
             padding: 20px;
             margin: 20px;
             width: 90%;
             max-width: 600px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-light);
             backdrop-filter: blur(10px);
             animation: cardAppear 0.8s ease-in-out;
+            transition: background 0.5s, box-shadow 0.3s;
         }
+
         body.dark .section {
-            background: rgba(0, 0, 0, 0.3);
+            background: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
         }
+
         @keyframes cardAppear {
-            from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; }
+            from { transform: scale(0.9); opacity: 0; } 
+            to { transform: scale(1); opacity: 1; }
         }
+
         .button {
-            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            background: var(--button-gradient);
             border: none;
             border-radius: 10px;
             color: #fff;
             padding: 15px 30px;
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin: 10px;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            animation: pulse 1.5s infinite;
+            animation: pulse 2s infinite;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 600;
+            width: calc(100% - 20px);
+            max-width: 300px;
         }
+
         .button i {
             margin-right: 10px;
         }
+
         @keyframes pulse {
-            0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); }
+            0% { box-shadow: 0 0 0 0 var(--pulse-color); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
+
         .button:hover {
-            transform: scale(1.05);
+            transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.3);
         }
+
+        body.dark .button:hover {
+            box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+        }
+
         .flashcard {
-            background: #fff;
-            color: #333;
+            background: var(--input-bg-light);
+            color: var(--card-text-light);
             border-radius: 10px;
             padding: 15px;
             margin: 10px 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             text-align: center;
-            transition: transform 0.2s;
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
+            overflow: hidden;
         }
+
         .flashcard:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
+
         body.dark .flashcard {
-            background: #444;
-            color: #fff;
+            background: var(--input-bg-dark);
+            color: var(--card-text-dark);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
+
+        body.dark .flashcard:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
         .flashcard img {
             max-width: 100%;
             border-radius: 10px;
             margin-bottom: 10px;
-            loading: lazy;
+            height: 150px;
+            object-fit: cover;
+            transition: transform 0.3s;
         }
+
+        .flashcard img:hover {
+            transform: scale(1.05);
+        }
+
         .flashcard .speak-btn {
             position: absolute;
             top: 10px;
@@ -135,169 +214,536 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+
+        .flashcard .speak-btn:hover {
+            background: #45a049;
+            transform: scale(1.1);
+        }
+
         .quiz-container {
             margin: 20px 0;
         }
+
         .quiz-options {
             display: flex;
             flex-direction: column;
         }
+
         .quiz-option {
-            background: #eee;
-            color: #333;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
+            background: var(--quiz-option-light);
+            color: var(--input-text-light);
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-weight: 500;
         }
+
         body.dark .quiz-option {
-            background: #555;
-            color: #ddd;
+            background: var(--quiz-option-dark);
+            color: var(--input-text-dark);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+
         .quiz-option:hover {
-            background: #ddd;
+            background: var(--quiz-hover-light);
+            transform: translateX(5px);
         }
+
         body.dark .quiz-option:hover {
-            background: #666;
+            background: var(--quiz-hover-dark);
         }
+
         .quiz-input {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            width: 80%;
-            background: #fff;
-            color: #333;
+            margin: 15px 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            width: calc(100% - 30px);
+            background: var(--input-bg-light);
+            color: var(--input-text-light);
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
+
         body.dark .quiz-input {
-            background: #555;
-            color: #ddd;
+            background: var(--input-bg-dark);
+            color: var(--input-text-dark);
         }
+
+        .quiz-input:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        body.dark .quiz-input:focus {
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.4);
+        }
+
         .result {
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
         }
+
+        .result.correct {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .result.incorrect {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
         .about-text {
             font-size: 1em;
-            line-height: 1.5;
+            line-height: 1.6;
+            text-align: justify;
         }
+
         .level-section {
             display: none;
+            animation: fadeIn 0.5s ease-in-out;
         }
+
         .confetti {
             position: absolute;
             width: 10px;
             height: 10px;
             animation: confetti-fall 1s linear;
+            z-index: 1000;
         }
+
         @keyframes confetti-fall {
             0% { transform: translateY(0) rotate(0); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
+
+        .progress-container {
+            margin: 15px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
         .progress-bar {
-            background: #ddd;
-            height: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
+            background: var(--progress-bg-light);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
+
         body.dark .progress-bar {
-            background: #666;
+            background: var(--progress-bg-dark);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
+
         .progress-fill {
-            background: #4caf50;
+            background: var(--progress-fill);
             height: 100%;
-            border-radius: 5px;
-            transition: width 0.3s;
+            border-radius: 6px;
+            transition: width 0.5s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+
         .award {
-            font-size: 2em;
-            animation: bounce 1s;
+            font-size: 2.5em;
+            animation: bounce 1s ease-in-out;
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            color: gold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+
         @keyframes bounce {
-            0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); }
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
         }
+
+        .search-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
         .search-input {
-            padding: 10px;
-            width: 80%;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: none;
-            background: #fff;
-            color: #333;
+            padding: 12px 15px 12px 40px;
+            width: 100%;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background: var(--input-bg-light);
+            color: var(--input-text-light);
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
+
         body.dark .search-input {
-            background: #555;
-            color: #ddd;
+            background: var(--input-bg-dark);
+            color: var(--input-text-dark);
         }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        body.dark .search-input:focus {
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.4);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        body.dark .search-icon {
+            color: #aaa;
+        }
+
         iframe {
             width: 100%;
             height: 200px;
             border-radius: 10px;
-            margin: 10px 0;
+            margin: 15px 0;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
+
+        body.dark iframe {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
         .profile-section {
             text-align: center;
         }
+
         .badge {
-            font-size: 2em;
-            margin: 5px;
+            font-size: 2.5em;
+            margin: 8px;
+            display: inline-block;
+            animation: badgePulse 2s infinite;
         }
+
+        @keyframes badgePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         .streak {
-            font-size: 1.5em;
+            font-size: 1.8em;
             color: gold;
+            font-weight: 700;
         }
+
         .daily-challenge {
             background: rgba(255, 215, 0, 0.2);
             padding: 15px;
             border-radius: 10px;
-            margin: 10px 0;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
+
+        body.dark .daily-challenge {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
         .favorite-btn {
             position: absolute;
             top: 10px;
             left: 10px;
             background: transparent;
             border: none;
-            font-size: 1.5em;
+            font-size: 1.8em;
             cursor: pointer;
+            transition: transform 0.2s, color 0.3s;
+            color: #ccc;
+            z-index: 2;
         }
+
+        .favorite-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-btn.favorited {
+            color: var(--favorite-btn-color);
+        }
+
         .favorites-list {
-            margin-top: 20px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
+
+        body.dark .favorites-list {
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
         .remove-fav {
-            background: #f44336;
+            background: var(--remove-btn-bg);
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 5px 10px;
-            margin-left: 10px;
+            padding: 8px 12px;
+            margin-top: 10px;
             cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9em;
         }
+
+        .remove-fav:hover {
+            background: #d32f2f;
+        }
+
         footer {
             width: 100%;
             text-align: center;
-            padding: 10px 0;
+            padding: 15px 0;
             background: rgba(0,0,0,0.2);
             margin-top: auto;
-            font-size: 0.8em;
+            font-size: 0.85em;
         }
+
         .loading {
             text-align: center;
-            color: #fff;
+            color: var(--text-light);
+            padding: 20px;
+            font-size: 1.2em;
+        }
+
+        body.dark .loading {
+            color: var(--text-dark);
+        }
+
+        .back-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background 0.3s;
+            z-index: 11;
+        }
+
+        body.dark .back-button {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-dark);
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        body.dark .back-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background 0.3s;
+            z-index: 11;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-dark);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .level-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .level-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 12px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-width: 120px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        body.dark .level-button {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-dark);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .level-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        body.dark .level-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .level-button i {
+            margin-right: 8px;
+        }
+
+        .user-greeting {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        body.dark .stat-card {
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #4caf50;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            
+            .section {
+                padding: 15px;
+                margin: 15px;
+            }
+            
+            .flashcard {
+                padding: 12px;
+            }
+            
+            .quiz-option {
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <button class="back-button" onclick="showMainMenu()" style="display: none;">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+    
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <header>
         <h1>Tegy S: Обучение по направлениям</h1>
     </header>
     
     <div id="main-menu" class="section">
+        <div class="user-greeting" id="user-greeting"></div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-progress">0</div>
+                <div class="stat-label">Заданий</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="streak-display">0</div>
+                <div class="stat-label">Серия дней</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="favorites-count">0</div>
+                <div class="stat-label">Избранное</div>
+            </div>
+        </div>
         <p>Выберите направление для обучения:</p>
         <button class="button" onclick="showSection('english')"><i class="fas fa-book"></i> Английский язык</button>
         <button class="button" onclick="showSection('math')"><i class="fas fa-calculator"></i> Математика</button>
@@ -305,28 +751,37 @@
         <button class="button" onclick="showSection('programming')"><i class="fas fa-code"></i> Программирование</button>
         <button class="button" onclick="showSection('profile')"><i class="fas fa-user"></i> Профиль</button>
         <button class="button" onclick="showSection('about')"><i class="fas fa-info-circle"></i> О нас</button>
-        <button class="button" onclick="toggleTheme()"><i class="fas fa-moon"></i> Тёмная тема</button>
     </div>
-    
-    <!-- English Section (как в оригинале, с полным контентом) -->
+
+    <!-- English Section -->
     <div id="english-section" class="section" style="display: none;">
         <h2>Уроки английского языка</h2>
-        <input type="text" class="search-input" id="search-english" placeholder="Поиск по словам..." oninput="searchFlashcards('english')">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="search-english" placeholder="Поиск по словам..." oninput="debouncedSearchFlashcards('english')">
+        </div>
         <div id="daily-challenge-english" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-word"></p>
             <input type="text" id="daily-input" class="quiz-input" placeholder="Перевод">
-            <button class="button" onclick="checkDaily('english')">Проверить</button>
+            <button class="button" onclick="checkDaily('english')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
             <p id="daily-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
-        <button class="button" onclick="showLevel('english', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
-        <button class="button" onclick="showLevel('english', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
-        <button class="button" onclick="showLevel('english', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
-        
+        <div class="level-buttons">
+            <button class="level-button" onclick="showLevel('english', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
+            <button class="level-button" onclick="showLevel('english', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
+            <button class="level-button" onclick="showLevel('english', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
+        </div>
         <div id="english-beginner-level" class="level-section">
             <h3>Beginner: Основные слова и фразы</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-english-beginner" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-english-beginner">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-english-beginner" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-english-beginner"></div>
             <div id="quizzes-english-beginner" class="quiz-container"></div>
             <div id="award-english-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -334,10 +789,15 @@
             <button class="button" style="display: none;" id="next-english-beginner" onclick="showLevel('english', 'intermediate')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('english')">Вернуться к уровням</button>
         </div>
-        
         <div id="english-intermediate-level" class="level-section">
             <h3>Intermediate: Фразы и грамматика</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-english-intermediate" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-english-intermediate">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-english-intermediate" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-english-intermediate"></div>
             <div id="quizzes-english-intermediate" class="quiz-container"></div>
             <div id="award-english-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -345,10 +805,15 @@
             <button class="button" style="display: none;" id="next-english-intermediate" onclick="showLevel('english', 'advanced')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('english')">Вернуться к уровням</button>
         </div>
-        
         <div id="english-advanced-level" class="level-section">
             <h3>Advanced: Идиомы и сложные конструкции</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-english-advanced" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-english-advanced">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-english-advanced" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-english-advanced"></div>
             <div id="quizzes-english-advanced" class="quiz-container"></div>
             <div id="award-english-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -360,26 +825,36 @@
             <h3>Избранные карточки</h3>
         </div>
     </div>
-    
-    <!-- Math Section (полный) -->
+
+    <!-- Math Section -->
     <div id="math-section" class="section" style="display: none;">
         <h2>Уроки математики</h2>
-        <input type="text" class="search-input" id="search-math" placeholder="Поиск по темам..." oninput="searchFlashcards('math')">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="search-math" placeholder="Поиск по темам..." oninput="debouncedSearchFlashcards('math')">
+        </div>
         <div id="daily-challenge-math" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-math-question"></p>
             <input type="text" id="daily-math-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDaily('math')">Проверить</button>
+            <button class="button" onclick="checkDaily('math')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
             <p id="daily-math-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
-        <button class="button" onclick="showLevel('math', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
-        <button class="button" onclick="showLevel('math', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
-        <button class="button" onclick="showLevel('math', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
-        
+        <div class="level-buttons">
+            <button class="level-button" onclick="showLevel('math', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
+            <button class="level-button" onclick="showLevel('math', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
+            <button class="level-button" onclick="showLevel('math', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
+        </div>
         <div id="math-beginner-level" class="level-section">
             <h3>Beginner: Основы арифметики</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-math-beginner" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-math-beginner">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-math-beginner" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-math-beginner"></div>
             <div id="quizzes-math-beginner" class="quiz-container"></div>
             <div id="award-math-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -387,10 +862,15 @@
             <button class="button" style="display: none;" id="next-math-beginner" onclick="showLevel('math', 'intermediate')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('math')">Вернуться к уровням</button>
         </div>
-        
         <div id="math-intermediate-level" class="level-section">
             <h3>Intermediate: Геометрия и алгебра</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-math-intermediate" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-math-intermediate">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-math-intermediate" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-math-intermediate"></div>
             <div id="quizzes-math-intermediate" class="quiz-container"></div>
             <div id="award-math-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -398,10 +878,15 @@
             <button class="button" style="display: none;" id="next-math-intermediate" onclick="showLevel('math', 'advanced')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('math')">Вернуться к уровням</button>
         </div>
-        
         <div id="math-advanced-level" class="level-section">
             <h3>Advanced: Калькулюс и статистика</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-math-advanced" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-math-advanced">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-math-advanced" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-math-advanced"></div>
             <div id="quizzes-math-advanced" class="quiz-container"></div>
             <div id="award-math-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -413,26 +898,36 @@
             <h3>Избранные карточки</h3>
         </div>
     </div>
-    
-    <!-- History Section (полный) -->
+
+    <!-- History Section -->
     <div id="history-section" class="section" style="display: none;">
         <h2>Уроки истории</h2>
-        <input type="text" class="search-input" id="search-history" placeholder="Поиск по событиям..." oninput="searchFlashcards('history')">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="search-history" placeholder="Поиск по событиям..." oninput="debouncedSearchFlashcards('history')">
+        </div>
         <div id="daily-challenge-history" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-history-question"></p>
             <input type="text" id="daily-history-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDaily('history')">Проверить</button>
+            <button class="button" onclick="checkDaily('history')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
             <p id="daily-history-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
-        <button class="button" onclick="showLevel('history', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
-        <button class="button" onclick="showLevel('history', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
-        <button class="button" onclick="showLevel('history', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
-        
+        <div class="level-buttons">
+            <button class="level-button" onclick="showLevel('history', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
+            <button class="level-button" onclick="showLevel('history', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
+            <button class="level-button" onclick="showLevel('history', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
+        </div>
         <div id="history-beginner-level" class="level-section">
             <h3>Beginner: Древний мир</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-history-beginner" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-history-beginner">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-history-beginner" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-history-beginner"></div>
             <div id="quizzes-history-beginner" class="quiz-container"></div>
             <div id="award-history-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -440,10 +935,15 @@
             <button class="button" style="display: none;" id="next-history-beginner" onclick="showLevel('history', 'intermediate')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('history')">Вернуться к уровням</button>
         </div>
-        
         <div id="history-intermediate-level" class="level-section">
             <h3>Intermediate: Средневековье</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-history-intermediate" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-history-intermediate">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-history-intermediate" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-history-intermediate"></div>
             <div id="quizzes-history-intermediate" class="quiz-container"></div>
             <div id="award-history-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -451,10 +951,15 @@
             <button class="button" style="display: none;" id="next-history-intermediate" onclick="showLevel('history', 'advanced')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('history')">Вернуться к уровням</button>
         </div>
-        
         <div id="history-advanced-level" class="level-section">
             <h3>Advanced: Современная история</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-history-advanced" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-history-advanced">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-history-advanced" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-history-advanced"></div>
             <div id="quizzes-history-advanced" class="quiz-container"></div>
             <div id="award-history-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -467,25 +972,35 @@
         </div>
     </div>
 
-    <!-- Programming Section (новый) -->
+    <!-- Programming Section -->
     <div id="programming-section" class="section" style="display: none;">
         <h2>Уроки программирования</h2>
-        <input type="text" class="search-input" id="search-programming" placeholder="Поиск по терминам..." oninput="searchFlashcards('programming')">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="search-programming" placeholder="Поиск по терминам..." oninput="debouncedSearchFlashcards('programming')">
+        </div>
         <div id="daily-challenge-programming" class="daily-challenge" style="display: none;">
             <h3>Ежедневный вызов</h3>
             <p id="daily-programming-question"></p>
             <input type="text" id="daily-programming-input" class="quiz-input" placeholder="Ответ">
-            <button class="button" onclick="checkDaily('programming')">Проверить</button>
+            <button class="button" onclick="checkDaily('programming')" style="width: 100%; max-width: none; margin: 10px 0;">Проверить</button>
             <p id="daily-programming-result" class="result"></p>
         </div>
         <p>Выберите уровень:</p>
-        <button class="button" onclick="showLevel('programming', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
-        <button class="button" onclick="showLevel('programming', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
-        <button class="button" onclick="showLevel('programming', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
-        
+        <div class="level-buttons">
+            <button class="level-button" onclick="showLevel('programming', 'beginner')"><i class="fas fa-star"></i> Beginner</button>
+            <button class="level-button" onclick="showLevel('programming', 'intermediate')"><i class="fas fa-star-half-alt"></i> Intermediate</button>
+            <button class="level-button" onclick="showLevel('programming', 'advanced')"><i class="fas fa-star"></i> Advanced</button>
+        </div>
         <div id="programming-beginner-level" class="level-section">
             <h3>Beginner: Основы</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-programming-beginner" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-programming-beginner">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-programming-beginner" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-programming-beginner"></div>
             <div id="quizzes-programming-beginner" class="quiz-container"></div>
             <div id="award-programming-beginner" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -493,10 +1008,15 @@
             <button class="button" style="display: none;" id="next-programming-beginner" onclick="showLevel('programming', 'intermediate')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
         </div>
-        
         <div id="programming-intermediate-level" class="level-section">
             <h3>Intermediate: Циклы и условия</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-programming-intermediate" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-programming-intermediate">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-programming-intermediate" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-programming-intermediate"></div>
             <div id="quizzes-programming-intermediate" class="quiz-container"></div>
             <div id="award-programming-intermediate" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -504,10 +1024,15 @@
             <button class="button" style="display: none;" id="next-programming-intermediate" onclick="showLevel('programming', 'advanced')">Следующий уровень</button>
             <button class="button" onclick="hideLevels('programming')">Вернуться к уровням</button>
         </div>
-        
         <div id="programming-advanced-level" class="level-section">
             <h3>Advanced: OOP и алгоритмы</h3>
-            <div class="progress-bar"><div class="progress-fill" id="progress-programming-advanced" style="width: 0%;"></div></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progress-text-programming-advanced">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-programming-advanced" style="width: 0%;"></div></div>
+            </div>
             <div id="flashcards-programming-advanced"></div>
             <div id="quizzes-programming-advanced" class="quiz-container"></div>
             <div id="award-programming-advanced" style="display: none;"><span class="award">🏆 Уровень пройден!</span></div>
@@ -519,28 +1044,37 @@
             <h3>Избранные карточки</h3>
         </div>
     </div>
-    
+
     <div id="profile-section" class="section profile-section" style="display: none;">
         <h2>Ваш профиль</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="profile-streak">0</div>
+                <div class="stat-label">Серия дней</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="profile-favorites">0</div>
+                <div class="stat-label">Избранное</div>
+            </div>
+        </div>
         <p>Прогресс по предметам:</p>
         <ul id="profile-progress"></ul>
         <p>Значки:</p>
         <div id="profile-badges"></div>
-        <p>Серия дней: <span id="streak-counter" class="streak">0</span></p>
         <button class="button" onclick="shareProgress()"><i class="fas fa-share"></i> Поделиться прогрессом</button>
         <button class="button" onclick="showMainMenu()">Назад</button>
     </div>
-    
+
     <div id="about-section" class="section" style="display: none;">
         <h2>О нас</h2>
         <p class="about-text">Tegcompany — инновационная компания, основанная в Республике Беларусь Юркевичем Артёмом Игоревичем. С момента своего основания Tegcompany сосредоточилась на разработке интеллектуальных решений, начав с создания первых чат-ботов с элементами искусственного интеллекта — Tegych P и Beeprav P. Эти проекты стали отправной точкой в развитии компании, заложив основу для будущих технологических инициатив.</p>
         <button class="button" onclick="showMainMenu()">Назад</button>
     </div>
-    
+
     <footer>
         &copy; 2025 Tegcompany. Все права защищены.
     </footer>
-    
+
     <script>
         // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
@@ -549,12 +1083,7 @@
             document.body.innerHTML = '<p style="color: white; text-align: center;">Доступ только через Telegram!</p>';
         } else {
             tg.ready();
-            tg.MainButton.text = 'Вернуться в меню';
-            tg.MainButton.onClick(showMainMenu);
-            tg.MainButton.show();
             tg.expand();
-            tg.BackButton.onClick(showMainMenu);
-            tg.BackButton.show();
         }
 
         // Полные данные уроков
@@ -778,6 +1307,7 @@
         let favorites = JSON.parse(localStorage.getItem('tegyFavorites')) || {};
         let streak = parseInt(localStorage.getItem('tegyStreak')) || 0;
         let lastDaily = localStorage.getItem('tegyLastDaily') || new Date().toDateString();
+        let searchTimeout;
 
         // Функции
         function generateFlashcards(subject, level) {
@@ -793,13 +1323,13 @@
                     const term = card.word || card.term || card.event;
                     const expl = card.translation || card.explanation;
                     div.innerHTML = `
-                        <button class="favorite-btn" onclick="toggleFavorite('${subject}', '${level}', ${index})" style="color: ${favorites[div.dataset.key] ? 'red' : 'black'}">❤️</button>
+                        <button class="favorite-btn ${favorites[div.dataset.key] ? 'favorited' : ''}" onclick="toggleFavorite('${subject}', '${level}', ${index})">❤️</button>
                         <img src="${card.img}" alt="${term}" loading="lazy">
-                        <p><strong>${card.word ? 'Word' : card.term ? 'Term' : 'Event'}:</strong> ${term}</p>
-                        <p><strong>${card.translation ? 'Translation' : 'Explanation'}:</strong> ${expl}</p>
-                        <p><strong>Example:</strong> ${card.example}</p>
-                        <p><strong>Fun Fact:</strong> ${card.fact}</p>
-                        <button class="speak-btn" onclick="speakText('${term}')"><i class="fas fa-volume-up"></i></button>
+                        <p><strong>${card.word ? 'Слово' : card.term ? 'Термин' : 'Событие'}:</strong> ${term}</p>
+                        <p><strong>${card.translation ? 'Перевод' : 'Объяснение'}:</strong> ${expl}</p>
+                        <p><strong>Пример:</strong> ${card.example}</p>
+                        <p><strong>Интересный факт:</strong> ${card.fact}</p>
+                        ${card.word ? `<button class="speak-btn" onclick="speakText('${term}')"><i class="fas fa-volume-up"></i></button>` : ''}
                     `;
                     container.appendChild(div);
                 });
@@ -839,29 +1369,34 @@
             generateQuizzes(subject, level);
             updateProgress(subject, level);
             showDailyChallenge(subject);
+            document.querySelector('.back-button').style.display = 'flex';
             window.scrollTo(0, 0);
         }
 
         function toggleTheme() {
             document.body.classList.toggle('dark');
-            localStorage.setItem('tegyTheme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('tegyTheme', isDark ? 'dark' : 'light');
+            document.querySelector('.theme-toggle i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         }
 
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             const targetSection = document.getElementById(`${sectionId}-section`);
             if (targetSection) targetSection.style.display = 'block';
-            tg.MainButton.show();
             if (sectionId !== 'profile' && sectionId !== 'about') hideLevels(sectionId);
             if (sectionId === 'profile') updateProfile();
             if (subjects[sectionId]) updateFavorites(sectionId);
+            document.querySelector('.back-button').style.display = 'flex';
+            window.scrollTo(0, 0);
         }
 
         function showMainMenu() {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.getElementById('main-menu').style.display = 'block';
-            tg.MainButton.hide();
+            document.querySelector('.back-button').style.display = 'none';
             checkStreak();
+            updateMainMenuStats();
         }
 
         function hideLevels(subject) {
@@ -878,17 +1413,24 @@
         function updateProgress(subject, level) {
             const key = `${subject}-${level}`;
             if (!progress[key]) progress[key] = 0;
-            const fill = document.getElementById(`progress-${key.replace('-', '-')}`);
-            if (!fill) return;
+            const fill = document.getElementById(`progress-${key}`);
+            const text = document.getElementById(`progress-text-${key}`);
+            if (!fill || !text) return;
             const quizCount = subjects[subject][level].quizzes.length;
             const percent = Math.min((progress[key] / quizCount) * 100, 100);
             fill.style.width = `${percent}%`;
+            text.innerText = `${Math.round(percent)}%`;
             if (percent >= 100) {
-                document.getElementById(`award-${key.replace('-', '-')}`).style.display = 'block';
-                document.getElementById(`next-${key.replace('-', '-')}`).style.display = 'block';
+                document.getElementById(`award-${key}`).style.display = 'block';
+                document.getElementById(`next-${key}`).style.display = 'block';
                 tg.showAlert('Уровень пройден! 🎉');
             }
             localStorage.setItem('tegyProgress', JSON.stringify(progress));
+        }
+
+        function debouncedSearchFlashcards(subject) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => searchFlashcards(subject), 300);
         }
 
         function searchFlashcards(subject) {
@@ -906,27 +1448,31 @@
             const lowerCorrect = correctAnswer.toLowerCase().trim();
             if (lowerSelected === lowerCorrect) {
                 result.innerText = 'Правильно! 🎉';
-                result.style.color = 'green';
+                result.className = 'result correct';
                 tg.HapticFeedback.impactOccurred('heavy');
                 progress[`${subject}-${level}`] = (progress[`${subject}-${level}`] || 0) + 1;
                 updateProgress(subject, level);
                 createConfetti();
             } else {
                 result.innerText = `Неправильно. Правильный ответ: ${correctAnswer}`;
-                result.style.color = 'red';
+                result.className = 'result incorrect';
                 tg.HapticFeedback.notificationOccurred('error');
             }
         }
 
         function createConfetti() {
-            for (let i = 0; i < 50; i++) {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            for (let i = 0; i < 100; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
                 document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 3000);
+                setTimeout(() => confetti.remove(), 5000);
             }
         }
 
@@ -934,6 +1480,7 @@
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
+                utterance.rate = 0.8;
                 speechSynthesis.speak(utterance);
             } else {
                 tg.showAlert('Произношение не поддерживается в этом браузере.');
@@ -945,9 +1492,11 @@
             favorites[key] = !favorites[key];
             localStorage.setItem('tegyFavorites', JSON.stringify(favorites));
             updateFavorites(subject);
+            
             // Обновляем цвет кнопки
-            const btn = event.target;
-            btn.style.color = favorites[key] ? 'red' : 'black';
+            event.stopPropagation();
+            const btn = event.currentTarget;
+            btn.classList.toggle('favorited');
         }
 
         function updateFavorites(subject) {
@@ -964,7 +1513,7 @@
                     div.className = 'flashcard';
                     div.innerHTML = `
                         <p><strong>${card.word || card.term || card.event}</strong>: ${card.translation || card.explanation}</p>
-                        <p>Example: ${card.example}</p>
+                        <p>Пример: ${card.example}</p>
                         <button class="remove-fav" onclick="toggleFavorite('${s}', '${l}', ${i})">Удалить</button>
                     `;
                     container.appendChild(div);
@@ -972,6 +1521,7 @@
             });
             if (!hasFavorites) container.innerHTML += '<p>Нет избранных карточек.</p>';
         }
+
         function showDailyChallenge(subject) {
             const today = new Date().toDateString();
             if (lastDaily !== today) {
@@ -982,14 +1532,12 @@
             }
             const challengeDiv = document.getElementById(`daily-challenge-${subject}`);
             if (challengeDiv) challengeDiv.style.display = 'block';
-
-            // Генерация случайного вызова в зависимости от предмета (используем beginner для простоты)
+            
             let questionEl, inputEl, resultEl;
             if (subject === 'english') {
                 questionEl = document.getElementById('daily-word');
                 const randomCard = subjects.english.beginner.flashcards[Math.floor(Math.random() * subjects.english.beginner.flashcards.length)];
                 questionEl.innerText = `Переведи "${randomCard.word}"`;
-                // Сохраняем правильный ответ в data-атрибуте для проверки
                 questionEl.dataset.correct = randomCard.translation.toLowerCase();
             } else if (subject === 'math') {
                 questionEl = document.getElementById('daily-math-question');
@@ -1007,7 +1555,7 @@
                 questionEl.innerText = randomQuiz.question;
                 questionEl.dataset.correct = randomQuiz.answer.toLowerCase();
             }
-            // Очищаем предыдущие результаты
+            
             if (questionEl) {
                 const inputId = `daily-${subject}-input` || `daily-input`;
                 inputEl = document.getElementById(inputId);
@@ -1037,24 +1585,21 @@
                 resultEl = document.getElementById('daily-programming-result');
             }
             if (!questionEl || !inputEl || !resultEl) return;
-
             const userAnswer = inputEl.value.toLowerCase().trim();
             const correctAnswer = questionEl.dataset.correct || '';
             if (userAnswer === correctAnswer) {
                 resultEl.innerText = 'Правильно! 🎉 Стreak обновлён.';
-                resultEl.style.color = 'green';
+                resultEl.className = 'result correct';
                 tg.HapticFeedback.impactOccurred('heavy');
                 createConfetti();
-                // Обновляем стрик (уже сделано в showDailyChallenge, но можно добавить бонус прогресса)
                 progress[`${subject}-beginner`] = (progress[`${subject}-beginner`] || 0) + 1;
                 localStorage.setItem('tegyProgress', JSON.stringify(progress));
             } else {
                 resultEl.innerText = `Неправильно. Правильный ответ: ${questionEl.dataset.correct}`;
-                resultEl.style.color = 'red';
+                resultEl.className = 'result incorrect';
                 tg.HapticFeedback.notificationOccurred('error');
-                // Не сбрасываем стрик, но не увеличиваем
             }
-            inputEl.value = '';  // Очистка ввода
+            inputEl.value = '';
         }
 
         function checkStreak() {
@@ -1065,7 +1610,8 @@
                 streak = 0;
                 localStorage.setItem('tegyStreak', '0');
             }
-            document.getElementById('streak-counter').innerText = streak;  // Обновляем в профиле при необходимости
+            document.getElementById('streak-display').innerText = streak;
+            document.getElementById('profile-streak').innerText = streak;
         }
 
         function updateProfile() {
@@ -1083,19 +1629,17 @@
                     progressList.appendChild(li);
                 });
             });
-
             const badges = document.getElementById('profile-badges');
             if (badges) {
                 badges.innerHTML = '';
-                // Значки на основе прогресса
                 let totalProgress = Object.values(progress).reduce((a, b) => a + b, 0);
-                if (totalProgress >= 10) badges.innerHTML += '<span class="badge">🥉</span>';  // Бронза
-                if (totalProgress >= 25) badges.innerHTML += '<span class="badge">🥈</span>';  // Серебро
-                if (totalProgress >= 50) badges.innerHTML += '<span class="badge">🥇</span>';  // Золото
-                if (streak >= 7) badges.innerHTML += '<span class="badge">🔥</span>';  // Огонь за стрик
+                if (totalProgress >= 10) badges.innerHTML += '<span class="badge">🥉</span>';
+                if (totalProgress >= 25) badges.innerHTML += '<span class="badge">🥈</span>';
+                if (totalProgress >= 50) badges.innerHTML += '<span class="badge">🥇</span>';
+                if (streak >= 7) badges.innerHTML += '<span class="badge">🔥</span>';
             }
-
-            document.getElementById('streak-counter').innerText = streak;
+            document.getElementById('profile-streak').innerText = streak;
+            document.getElementById('profile-favorites').innerText = Object.values(favorites).filter(fav => fav).length;
         }
 
         function shareProgress() {
@@ -1104,26 +1648,48 @@
             tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(tg.initDataUnsafe.start_param || '')}&text=${encodeURIComponent(text)}`);
         }
 
+        function updateMainMenuStats() {
+            const totalProgress = Object.values(progress).reduce((a, b) => a + b, 0);
+            const favoritesCount = Object.values(favorites).filter(fav => fav).length;
+            
+            document.getElementById('total-progress').innerText = totalProgress;
+            document.getElementById('streak-display').innerText = streak;
+            document.getElementById('favorites-count').innerText = favoritesCount;
+            
+            const user = initData.user;
+            if (user && user.first_name) {
+                document.getElementById('user-greeting').innerText = `Привет, ${user.first_name}!`;
+            }
+        }
+
         // Инициализация приложения
         function init() {
             // Восстанавливаем тему
             if (localStorage.getItem('tegyTheme') === 'dark') {
                 document.body.classList.add('dark');
+                document.querySelector('.theme-toggle i').className = 'fas fa-sun';
             }
+            
             // Показываем главное меню
             showMainMenu();
+            
             // Обновляем избранное для всех предметов
             Object.keys(subjects).forEach(subject => updateFavorites(subject));
+            
             // Проверяем стрик
             checkStreak();
+            
+            // Обновляем статистику главного меню
+            updateMainMenuStats();
         }
 
         // События
         window.addEventListener('load', init);
-
-        // Обработка ошибок (опционально)
+        
+        // Обработка ошибок
         window.onerror = function(msg, url, line) {
-            tg.showAlert(`Ошибка: ${msg} (строка ${line})`);
+            console.error('Error: ', msg, ' at ', url, ':', line);
+            // tg.showAlert(`Ошибка: ${msg} (строка ${line})`);
         };
     </script>
 </body>
